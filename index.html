@@ -1,0 +1,2030 @@
+<title>Центр гематологии</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* ---------- tokens ---------- */
+:root{
+  --bg:#F5F2F4;
+  --bg-raised:#FFFFFF;
+  --surface:#FFFFFF;
+  --surface-muted:#FAF7F8;
+  --surface-hover:#F1EAEE;
+  --border:#E5DEE2;
+  --border-strong:#D2C7CD;
+  --text:#241B1F;
+  --text-secondary:#6C6167;
+  --text-faint:#9A8D93;
+  --accent:#7A1B3B;
+  --accent-strong:#5E1530;
+  --accent-soft:#F3E1E7;
+  --accent-contrast:#FFFFFF;
+  --focus:#B0567A;
+
+  --status-neutral:#8C8690;    --status-neutral-bg:#ECE9EA;
+  --status-progress:#B8790E;   --status-progress-bg:#F8EDD9;
+  --status-done:#3E8F58;       --status-done-bg:#E1F1E7;
+  --status-overdue:#C23B3B;    --status-overdue-bg:#F9E2E2;
+
+  --priority-low:#8C8690;      --priority-low-bg:#ECE9EA;
+  --priority-medium:#3E76A8;   --priority-medium-bg:#DFEBF3;
+  --priority-high:#B8790E;     --priority-high-bg:#F8EDD9;
+  --priority-critical:#AC3434; --priority-critical-bg:#F6DFDF;
+
+  --shadow-sm:0 1px 2px rgba(36,27,31,.07);
+  --shadow-md:0 10px 28px rgba(36,27,31,.14);
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:18px;
+  --dept-brightness:1;
+  --font-ui:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-mono:'IBM Plex Mono',ui-monospace,'Consolas',monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#18121A;
+    --bg-raised:#1E1720;
+    --surface:#221A24;
+    --surface-muted:#2A2129;
+    --surface-hover:#302631;
+    --border:#3B2E3B;
+    --border-strong:#4D3C4C;
+    --text:#F2E9EC;
+    --text-secondary:#BCAEB6;
+    --text-faint:#8B7C85;
+    --accent:#E2688F;
+    --accent-strong:#EE8AA7;
+    --accent-soft:#3B2130;
+    --accent-contrast:#241019;
+    --focus:#E2688F;
+
+    --status-neutral:#A79BA3;   --status-neutral-bg:#332A32;
+    --status-progress:#E3AA47;  --status-progress-bg:#3B2E17;
+    --status-done:#63C283;      --status-done-bg:#193828;
+    --status-overdue:#E67A76;   --status-overdue-bg:#3C1E1E;
+
+    --priority-low:#A79BA3;     --priority-low-bg:#332A32;
+    --priority-medium:#78B2DB;  --priority-medium-bg:#1B2E3A;
+    --priority-high:#E3AA47;    --priority-high-bg:#3B2E17;
+    --priority-critical:#E67A76;--priority-critical-bg:#3C1E1E;
+    --dept-brightness:1.22;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#18121A;
+  --bg-raised:#1E1720;
+  --surface:#221A24;
+  --surface-muted:#2A2129;
+  --surface-hover:#302631;
+  --border:#3B2E3B;
+  --border-strong:#4D3C4C;
+  --text:#F2E9EC;
+  --text-secondary:#BCAEB6;
+  --text-faint:#8B7C85;
+  --accent:#E2688F;
+  --accent-strong:#EE8AA7;
+  --accent-soft:#3B2130;
+  --accent-contrast:#241019;
+  --focus:#E2688F;
+
+  --status-neutral:#A79BA3;   --status-neutral-bg:#332A32;
+  --status-progress:#E3AA47;  --status-progress-bg:#3B2E17;
+  --status-done:#63C283;      --status-done-bg:#193828;
+  --status-overdue:#E67A76;   --status-overdue-bg:#3C1E1E;
+
+  --priority-low:#A79BA3;     --priority-low-bg:#332A32;
+  --priority-medium:#78B2DB;  --priority-medium-bg:#1B2E3A;
+  --priority-high:#E3AA47;    --priority-high-bg:#3B2E17;
+  --priority-critical:#E67A76;--priority-critical-bg:#3C1E1E;
+  --dept-brightness:1.22;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-ui);
+  -webkit-font-smoothing:antialiased;
+}
+#app{max-width:1180px;margin:0 auto;padding:20px 20px 56px;}
+h1,h2,h3{text-wrap:balance;margin:0;}
+button{font-family:inherit;}
+input,select,textarea{font-family:inherit;}
+::selection{background:var(--accent-soft);}
+:focus-visible{outline:2px solid var(--focus);outline-offset:2px;border-radius:4px;}
+@media (prefers-reduced-motion: reduce){ *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;} }
+
+/* ---------- topbar ---------- */
+.topbar{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
+  padding:22px 0 18px;flex-wrap:wrap;
+}
+.brand{display:flex;align-items:center;gap:12px;}
+.brand-mark{
+  width:42px;height:42px;border-radius:11px;flex:none;
+  background:linear-gradient(155deg,var(--accent),var(--accent-strong));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-sm);
+}
+.brand-mark svg{width:22px;height:22px;}
+.brand-text h1{font-size:20px;font-weight:800;letter-spacing:-0.01em;}
+.brand-text p{margin:2px 0 0;font-size:13px;color:var(--text-secondary);}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.role-badge{
+  display:flex;align-items:center;gap:7px;border-radius:999px;border:1px dashed var(--border-strong);
+  background:var(--surface);color:var(--text-secondary);font-weight:700;font-size:12.5px;padding:7px 13px 7px 8px;cursor:pointer;
+  box-shadow:var(--shadow-sm);
+}
+.role-badge:hover{background:var(--surface-hover);}
+.role-badge.has-role{border-style:solid;border-color:var(--accent);background:var(--accent-soft);color:var(--accent);}
+.role-badge .role-badge-icon{width:22px;height:22px;border-radius:50%;background:var(--surface-muted);display:flex;align-items:center;justify-content:center;flex:none;}
+.role-badge.has-role .role-badge-icon{background:var(--bg-raised);}
+.role-badge svg{width:13px;height:13px;}
+.theme-toggle{display:flex;gap:2px;background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:3px;box-shadow:var(--shadow-sm);}
+.theme-toggle button{
+  width:32px;height:32px;border-radius:999px;border:none;background:transparent;color:var(--text-secondary);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+}
+.theme-toggle button svg{width:16px;height:16px;}
+.theme-toggle button.active{background:var(--accent);color:var(--accent-contrast);}
+
+.role-hint{color:var(--text-secondary);font-size:13px;margin:-6px 0 14px;}
+.role-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+@media (max-width:420px){.role-grid{grid-template-columns:1fr;}}
+.role-option{
+  display:flex;align-items:center;gap:10px;border:1px solid var(--border-strong);border-radius:12px;
+  background:var(--surface);color:var(--text);padding:12px;cursor:pointer;text-align:left;font-weight:700;font-size:13.5px;
+}
+.role-option:hover{background:var(--surface-hover);}
+.role-option.selected{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);}
+.role-option .role-icon{width:34px;height:34px;border-radius:9px;background:var(--surface-muted);display:flex;align-items:center;justify-content:center;flex:none;}
+.role-option.selected .role-icon{background:var(--bg-raised);}
+.role-option svg{width:18px;height:18px;}
+.demo-banner{
+  max-width:1180px;margin:0 auto 14px;padding:10px 16px;border-radius:var(--radius-sm);
+  background:var(--status-progress-bg);color:var(--status-progress);border:1px solid var(--status-progress);
+  font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;
+}
+
+/* ---------- tabs ---------- */
+.tabs{display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--border);padding-bottom:0;margin-bottom:20px;scrollbar-width:thin;}
+.tab-btn{
+  flex:none;border:none;background:transparent;color:var(--text-secondary);font-weight:700;font-size:14px;
+  padding:10px 16px;border-radius:10px 10px 0 0;cursor:pointer;position:relative;top:1px;white-space:nowrap;
+  border-bottom:2px solid transparent;
+}
+.tab-btn:hover{color:var(--text);background:var(--surface-hover);}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* ---------- generic ---------- */
+.btn{
+  display:inline-flex;align-items:center;gap:6px;border-radius:10px;border:1px solid var(--border-strong);
+  background:var(--surface);color:var(--text);font-weight:700;font-size:13.5px;padding:9px 14px;cursor:pointer;
+}
+.btn:hover{background:var(--surface-hover);}
+.btn-primary{background:var(--accent);border-color:var(--accent);color:var(--accent-contrast);}
+.btn-primary:hover{background:var(--accent-strong);border-color:var(--accent-strong);}
+.btn-ghost{border-color:transparent;background:transparent;}
+.btn-ghost:hover{background:var(--surface-hover);}
+.btn-danger{color:var(--status-overdue);}
+.btn-danger-confirm{background:var(--status-overdue);border-color:var(--status-overdue);color:#fff;}
+.btn-sm{padding:6px 10px;font-size:12.5px;border-radius:8px;}
+.btn[disabled]{opacity:.5;cursor:not-allowed;}
+
+.field{display:flex;flex-direction:column;gap:6px;}
+.field label{font-size:12.5px;font-weight:700;color:var(--text-secondary);}
+.field input[type="text"],.field input[type="date"],.field input[type="time"],.field select,.field textarea{
+  border:1px solid var(--border-strong);border-radius:9px;background:var(--surface);color:var(--text);
+  padding:9px 11px;font-size:14px;width:100%;
+}
+.field input[type="date"],.field input[type="time"]{font-family:var(--font-mono);}
+.field textarea{resize:vertical;min-height:64px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media (max-width:520px){.field-row{grid-template-columns:1fr;}}
+
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums;}
+.pill{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:999px;font-size:12px;font-weight:700;
+}
+.dept-dot{width:9px;height:9px;border-radius:50%;flex:none;filter:brightness(var(--dept-brightness));}
+.dept-chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-secondary);font-weight:600;}
+
+/* ---------- overview ---------- */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:22px;}
+@media (max-width:900px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:420px){.kpi-grid{grid-template-columns:1fr;}}
+.kpi-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;box-shadow:var(--shadow-sm);}
+.kpi-tile .kpi-value{font-family:var(--font-mono);font-size:28px;font-weight:600;line-height:1;}
+.kpi-tile .kpi-label{margin-top:8px;font-size:12.5px;color:var(--text-secondary);font-weight:600;}
+
+.panels-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:22px;}
+@media (max-width:760px){.panels-row{grid-template-columns:1fr;}}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:16px;box-shadow:var(--shadow-sm);}
+.panel h3{font-size:14.5px;font-weight:800;margin-bottom:12px;}
+.panel-list{display:flex;flex-direction:column;gap:2px;}
+.list-row{
+  display:flex;align-items:center;gap:10px;padding:9px 6px;border-radius:8px;cursor:pointer;
+}
+.list-row:hover{background:var(--surface-hover);}
+.list-row .lr-title{font-weight:700;font-size:13.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.list-row .lr-meta{font-size:12px;color:var(--text-secondary);white-space:nowrap;}
+.empty-note{color:var(--text-faint);font-size:13px;padding:8px 6px;}
+
+.dept-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;}
+.dept-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-md);padding:14px;cursor:pointer;
+  box-shadow:var(--shadow-sm);
+}
+.dept-card:hover{border-color:var(--border-strong);background:var(--surface-hover);}
+.dept-card-top{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.dept-card-top .dept-dot{width:11px;height:11px;}
+.dept-card-top .name{font-weight:800;font-size:14px;}
+.dept-card .head{font-size:12.5px;color:var(--text-secondary);margin-bottom:10px;}
+.dept-card .counts{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--text-secondary);}
+.dept-card .counts .mono{font-size:15px;color:var(--text);}
+.dept-card .nearest{margin-top:8px;font-size:12px;color:var(--text-faint);}
+
+.section-heading{display:flex;align-items:center;justify-content:space-between;margin:26px 0 12px;gap:10px;flex-wrap:wrap;}
+.section-heading h2{font-size:16px;font-weight:800;}
+
+/* ---------- calendar ---------- */
+.cal-toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px;flex-wrap:wrap;}
+.cal-toolbar .cal-title{font-size:16px;font-weight:800;min-width:170px;font-family:var(--font-mono);}
+.cal-nav{display:flex;gap:6px;}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;}
+.cal-dow{font-size:11.5px;font-weight:700;color:var(--text-secondary);text-align:center;padding-bottom:4px;text-transform:uppercase;letter-spacing:.04em;}
+.cal-cell{
+  background:var(--surface);border:1px solid var(--border);border-radius:10px;min-height:92px;padding:7px;
+  display:flex;flex-direction:column;gap:4px;cursor:pointer;
+}
+.cal-cell.blank{background:transparent;border-color:transparent;cursor:default;}
+.cal-cell:not(.blank):hover{border-color:var(--border-strong);background:var(--surface-hover);}
+.cal-cell.today{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset;}
+.cal-daynum{font-family:var(--font-mono);font-size:12.5px;font-weight:600;color:var(--text-secondary);}
+.cal-cell.today .cal-daynum{color:var(--accent);font-weight:700;}
+.cal-chip{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:600;overflow:hidden;}
+.cal-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cal-more{font-size:10.5px;color:var(--text-faint);font-weight:700;}
+@media (max-width:700px){.cal-cell{min-height:64px;}.cal-chip span{display:none;}}
+.cal-legend{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px;}
+
+/* ---------- table ---------- */
+.filter-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:flex-end;}
+.filter-bar .field{min-width:150px;}
+.filter-bar .field.search{flex:1;min-width:200px;}
+.table-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);box-shadow:var(--shadow-sm);}
+table{width:100%;border-collapse:collapse;min-width:760px;}
+thead th{
+  text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--text-secondary);
+  padding:11px 14px;border-bottom:1px solid var(--border);white-space:nowrap;
+}
+tbody td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13.5px;vertical-align:top;}
+tbody tr{cursor:pointer;}
+tbody tr:hover td{background:var(--surface-hover);}
+tbody tr:last-child td{border-bottom:none;}
+.ev-title{font-weight:700;}
+.ev-desc{color:var(--text-secondary);font-size:12.5px;margin-top:2px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* ---------- requests board ---------- */
+.board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.board.board-3{grid-template-columns:repeat(3,1fr);}
+@media (max-width:980px){.board{grid-template-columns:repeat(2,1fr);}.board.board-3{grid-template-columns:repeat(2,1fr);}}
+@media (max-width:620px){.board{grid-template-columns:1fr;}.board.board-3{grid-template-columns:1fr;}}
+.board-col{background:var(--surface-muted);border:1px solid var(--border);border-radius:var(--radius-md);padding:10px;min-height:80px;}
+.board-col-head{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 10px;}
+.board-col-head h4{font-size:12.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--text-secondary);}
+.board-col-head .count{font-family:var(--font-mono);font-size:12px;color:var(--text-faint);}
+.board-cards{display:flex;flex-direction:column;gap:10px;}
+.req-card{
+  background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--priority-medium);
+  border-radius:10px;padding:11px 12px;cursor:pointer;box-shadow:var(--shadow-sm);
+}
+.req-card:hover{background:var(--surface-hover);}
+.req-card .req-type{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--text-faint);margin-bottom:4px;}
+.req-card .req-title{font-weight:700;font-size:13.5px;margin-bottom:5px;}
+.req-card .req-desc{font-size:12px;color:var(--text-secondary);margin-bottom:8px;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+.req-card .req-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:11.5px;color:var(--text-secondary);}
+.req-card .req-foot{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:11px;color:var(--text-faint);}
+
+/* ---------- modal ---------- */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(20,14,17,.5);display:flex;align-items:center;justify-content:center;
+  padding:20px;z-index:100;overflow-y:auto;
+}
+.modal-panel{
+  background:var(--bg-raised);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);width:100%;max-width:560px;
+  padding:22px;max-height:calc(100vh - 40px);overflow-y:auto;
+}
+.modal-panel.wide{max-width:640px;}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:10px;}
+.modal-head h3{font-size:17px;font-weight:800;}
+.modal-close{border:none;background:transparent;color:var(--text-secondary);cursor:pointer;padding:4px;border-radius:8px;}
+.modal-close:hover{background:var(--surface-hover);}
+.modal-form{display:flex;flex-direction:column;gap:12px;}
+.modal-actions{display:flex;justify-content:space-between;align-items:center;margin-top:6px;gap:10px;flex-wrap:wrap;}
+.modal-actions .right{display:flex;gap:8px;}
+
+.swatches{display:flex;gap:8px;flex-wrap:wrap;}
+.swatch{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;filter:brightness(var(--dept-brightness));}
+.swatch.selected{border-color:var(--text);box-shadow:0 0 0 2px var(--bg-raised) inset;}
+
+.comments{border-top:1px solid var(--border);margin-top:6px;padding-top:14px;}
+.comments h4{font-size:13px;font-weight:800;margin-bottom:10px;}
+.comment-item{padding:9px 10px;border-radius:9px;background:var(--surface-muted);margin-bottom:8px;}
+.comment-item .c-head{display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-secondary);margin-bottom:3px;}
+.comment-item .c-author{font-weight:700;color:var(--text);}
+.comment-item .c-text{font-size:13px;}
+.comment-add{display:flex;gap:8px;margin-top:10px;}
+.comment-add input[type="text"]{flex:1;}
+
+.status-planned,.status-new{color:var(--status-neutral);background:var(--status-neutral-bg);}
+.status-in_progress{color:var(--status-progress);background:var(--status-progress-bg);}
+.status-done,.status-resolved{color:var(--status-done);background:var(--status-done-bg);}
+.status-overdue{color:var(--status-overdue);background:var(--status-overdue-bg);}
+.status-on_hold{color:var(--status-neutral);background:var(--status-neutral-bg);}
+
+.empty-state{padding:34px 16px;text-align:center;color:var(--text-faint);font-size:13.5px;}
+
+/* ---------- tab badge ---------- */
+.tab-badge{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;padding:0 5px;border-radius:999px;background:var(--accent);color:var(--accent-contrast);font-size:10.5px;font-weight:800;margin-left:6px;vertical-align:2px;}
+
+/* ---------- quick actions ---------- */
+.quick-actions{display:flex;flex-wrap:wrap;gap:8px;}
+
+/* ---------- staff directory (inside department modal) ---------- */
+.staff-list{display:flex;flex-direction:column;gap:6px;margin-bottom:8px;}
+.staff-row{display:flex;align-items:center;gap:8px;background:var(--surface-muted);border-radius:9px;padding:7px 10px;}
+.staff-row .s-name{font-weight:700;font-size:13px;}
+.staff-row .s-pos{color:var(--text-secondary);font-size:12px;flex:1;}
+.staff-row .s-remove{border:none;background:transparent;color:var(--text-faint);cursor:pointer;padding:2px 6px;border-radius:6px;font-size:13px;}
+.staff-row .s-remove:hover{background:var(--status-overdue-bg);color:var(--status-overdue);}
+.staff-add-row{display:flex;gap:6px;}
+.staff-add-row input{flex:1;}
+.resp-pick{font-size:12.5px;color:var(--text-secondary);}
+
+/* ---------- messages ---------- */
+.msg-row{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer;margin-bottom:8px;}
+.msg-row:hover{background:var(--surface-hover);}
+.msg-row.unread{border-color:var(--accent);background:var(--accent-soft);}
+.msg-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none;}
+.msg-row:not(.unread) .msg-dot{background:transparent;}
+.msg-row .msg-subject{font-weight:700;font-size:13.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.msg-row .msg-to{font-size:12px;color:var(--text-secondary);white-space:nowrap;}
+.msg-row .msg-date{font-size:11.5px;color:var(--text-faint);white-space:nowrap;}
+.msg-detail-meta{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;font-size:12.5px;color:var(--text-secondary);}
+.msg-detail-body{background:var(--surface-muted);border-radius:10px;padding:12px;font-size:13.5px;white-space:pre-wrap;}
+</style>
+
+<div id="app">
+  <div id="demoBannerSlot"></div>
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none"><path d="M12 3c3.6 4.2 7 8.2 7 11.8a7 7 0 1 1-14 0C5 11.2 8.4 7.2 12 3Z" fill="#fff" opacity=".95"/></svg>
+      </div>
+      <div class="brand-text">
+        <h1>Центр гематологии</h1>
+        <p>Единая панель деятельности подразделений</p>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button class="role-badge" id="roleBadge" type="button"></button>
+      <div class="theme-toggle" id="themeToggle">
+        <button data-theme-choice="light" title="Светлая тема" aria-label="Светлая тема"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+        <button data-theme-choice="system" title="Системная тема" aria-label="Системная тема"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg></button>
+        <button data-theme-choice="dark" title="Тёмная тема" aria-label="Тёмная тема"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="tabs" id="tabsBar"></nav>
+  <main id="content"></main>
+</div>
+<div id="modalRoot"></div>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= constants ================= */
+var DEPT_COLORS = ['#0E7C7B','#3B5BA5','#7B5EA7','#B5502E','#55707F','#B0577B','#7C7A2E','#2C8FA0'];
+var TABS = [
+  {id:'overview', label:'Обзор'},
+  {id:'calendar', label:'Календарь'},
+  {id:'events', label:'Все события'},
+  {id:'requests', label:'Заявки'},
+  {id:'reagents', label:'Реагенты и инциденты'},
+  {id:'pharmacy', label:'Склад и закупки'},
+  {id:'messages', label:'Сообщения'},
+  {id:'departments', label:'Подразделения'}
+];
+var TYPE_LABELS = {task:'Задача', meeting:'Встреча', project:'Проект', event:'Событие'};
+var REQ_TYPE_LABELS = {request:'Заявка', requirement:'Требование', difficulty:'Трудность'};
+var EV_PRIORITY_LABELS = {low:'Низкий', medium:'Средний', high:'Высокий'};
+var REQ_PRIORITY_LABELS = {low:'Низкий', medium:'Средний', high:'Высокий', critical:'Критический'};
+var EV_STATUS_LABELS = {planned:'Запланировано', in_progress:'В работе', done:'Выполнено', overdue:'Просрочено'};
+var REQ_STATUS_LABELS = {new:'Новая', in_progress:'В работе', on_hold:'Приостановлена', resolved:'Решена'};
+var REQ_STATUS_COLS = ['new','in_progress','on_hold','resolved'];
+var PRIORITY_ORDER = {critical:0, high:1, medium:2, low:3};
+var SEVERITY_LABELS = {low:'Низкая', medium:'Средняя', high:'Высокая', critical:'Критическая'};
+var INCIDENT_STATUS_LABELS = {new:'Новый', in_progress:'В работе', resolved:'Решён'};
+var INCIDENT_STATUS_COLS = ['new','in_progress','resolved'];
+var PROC_STATUS_LABELS = {new:'Новая', ordered:'Заказано', received:'Получено', cancelled:'Отменена'};
+var UNITS_HINT = 'уп., мл, шт., кор.';
+var DOW = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+var MONTHS = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+var ROLES = [
+  {id:'admin', label:'Администратор', icon:'<path d="M12 3l7 3v6c0 5-3.2 8.2-7 9.5C7.2 20.2 4 17 4 12V6l8-3Z"/>'},
+  {id:'clinicians', label:'Клиницисты', icon:'<path d="M12 4v16M4 12h16" stroke-linecap="round"/>'},
+  {id:'pharma', label:'Фармакология', icon:'<path d="M9 2h6M10 2v6l-5.5 9.5A1.8 1.8 0 0 0 6 20h12a1.8 1.8 0 0 0 1.5-2.5L14 8V2" stroke-linejoin="round"/><path d="M8.3 14h7.4"/>'},
+  {id:'lab', label:'Лаборатория', icon:'<path d="M10 2v13a2 2 0 0 0 4 0V2" stroke-linejoin="round"/><path d="M8 2h8M10 12h4"/>'}
+];
+var ROLE_LABELS = {}; ROLES.forEach(function(r){ ROLE_LABELS[r.id]=r.label; });
+var roleIconSvg = function(id, extraClass){
+  var r = ROLES.find(function(x){ return x.id===id; });
+  return '<svg class="'+(extraClass||'')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">'+(r?r.icon:'')+'</svg>';
+};
+
+/* ================= state ================= */
+var db=null, usingDb=false, dbErrored=false;
+var departments=[], events=[], requests=[];
+var staff=[], reagents=[], labIncidents=[], stock=[], procurement=[], messages=[];
+var activeTab='overview', lastRenderedTab=null;
+var calCursor=startOfMonth(new Date());
+var evFilters={dept:'',type:'',status:'',q:''};
+var reqFilters={dept:'',type:'',status:'',priority:'',q:''};
+var msgFilters={dept:'',q:''};
+var localIdCounter=1;
+var themeChoice = null;
+try{ themeChoice = localStorage.getItem('hema_theme'); }catch(e){}
+var currentRole = null;
+try{ currentRole = localStorage.getItem('hema_role'); }catch(e){}
+var roleModalShown = false;
+
+/* ================= utils ================= */
+function pad(n){ return String(n).padStart(2,'0'); }
+function toIso(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function todayIso(){ return toIso(new Date()); }
+function addDays(d,n){ var r=new Date(d); r.setDate(r.getDate()+n); return r; }
+function startOfMonth(d){ return new Date(d.getFullYear(), d.getMonth(), 1); }
+function daysInMonth(d){ return new Date(d.getFullYear(), d.getMonth()+1, 0).getDate(); }
+function fmtDate(iso){ if(!iso) return '—'; var p=iso.split('-'); return p[2]+'.'+p[1]+'.'+p[0]; }
+function fmtDateTime(iso){ if(!iso) return '—'; var d=new Date(iso); if(isNaN(d)) return iso; return fmtDate(toIso(d))+' '+pad(d.getHours())+':'+pad(d.getMinutes()); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+function deptById(id){ for(var i=0;i<departments.length;i++){ if(departments[i].id===id) return departments[i]; } return null; }
+function genLocalId(prefix){ return prefix+'_'+Date.now().toString(36)+'_'+(localIdCounter++); }
+function deptOptions(selectedId, includeNone){
+  var html='';
+  if(includeNone) html += '<option value=""'+(!selectedId?' selected':'')+'>— не указано —</option>';
+  departments.forEach(function(d){ html += '<option value="'+d.id+'"'+(d.id===selectedId?' selected':'')+'>'+esc(d.name)+'</option>'; });
+  return html;
+}
+function effectiveDate(ev){
+  if((ev.type==='task'||ev.type==='project') && ev.dueDate) return ev.dueDate;
+  return ev.startDate;
+}
+function computedStatus(ev){
+  if(ev.status==='done') return 'done';
+  var eff = effectiveDate(ev);
+  if(eff && eff < todayIso()) return 'overdue';
+  return ev.status;
+}
+function statusPill(code, labelMap){
+  return '<span class="pill status-'+code+'">'+esc(labelMap[code]||code)+'</span>';
+}
+
+/* ================= data access ================= */
+var COLL_MAP = null;
+function getArr(coll){
+  if(!COLL_MAP){
+    COLL_MAP = {
+      departments: function(){ return departments; },
+      events: function(){ return events; },
+      requests: function(){ return requests; },
+      staff: function(){ return staff; },
+      reagents: function(){ return reagents; },
+      labIncidents: function(){ return labIncidents; },
+      stock: function(){ return stock; },
+      procurement: function(){ return procurement; },
+      messages: function(){ return messages; }
+    };
+  }
+  return COLL_MAP[coll]();
+}
+function staffByDept(deptId){ return staff.filter(function(s){ return s.departmentId===deptId; }); }
+
+function createDoc(coll, data){
+  if(usingDb){
+    return db.collection(coll).add(data).then(function(ref){ return ref.id; }).catch(function(e){ console.error(e); throw e; });
+  }
+  var id = genLocalId(coll);
+  getArr(coll).push(Object.assign({id:id}, data));
+  renderApp();
+  return Promise.resolve(id);
+}
+function updateDocFn(coll, id, data){
+  if(usingDb){
+    return db.collection(coll).doc(id).update(data).catch(function(e){ console.error(e); throw e; });
+  }
+  var arr=getArr(coll);
+  for(var i=0;i<arr.length;i++){ if(arr[i].id===id){ Object.assign(arr[i], data); break; } }
+  renderApp();
+  return Promise.resolve();
+}
+function deleteDocFn(coll, id){
+  if(usingDb){
+    return db.collection(coll).doc(id).delete().catch(function(e){ console.error(e); throw e; });
+  }
+  var arr=getArr(coll);
+  for(var i=0;i<arr.length;i++){ if(arr[i].id===id){ arr.splice(i,1); break; } }
+  renderApp();
+  return Promise.resolve();
+}
+
+/* ================= seed data ================= */
+function seedDeptDefs(){
+  return [
+    {name:'Стационар', head:'Смирнова О. П.', color:DEPT_COLORS[0], note:'Круглосуточный стационар, 4 отделения'},
+    {name:'Поликлиника', head:'Ковалёв Д. А.', color:DEPT_COLORS[1], note:'Амбулаторный приём и диспансеризация'},
+    {name:'Лаборатория', head:'Фомина Т. И.', color:DEPT_COLORS[2], note:'Клиническая и молекулярная диагностика'},
+    {name:'Отделение трансплантации костного мозга', head:'Багдасарян К. Р.', color:DEPT_COLORS[3], note:'ТКМ и реанимация'},
+    {name:'Филиал №1', head:'Орлова Н. С.', color:DEPT_COLORS[4], note:'Иногородний филиал'},
+    {name:'Филиал №2', head:'Ткаченко И. В.', color:DEPT_COLORS[5], note:'Иногородний филиал'},
+    {name:'Научно-методический отдел', head:'Райнер Ю. Б.', color:DEPT_COLORS[6], note:'Протоколы, обучение, публикации'}
+  ];
+}
+function seedEventDefs(ids){
+  var t = new Date();
+  return [
+    {type:'task', title:'Обновить регистр пациентов', departmentId:ids['Лаборатория'], description:'Сверить записи регистра с данными ТКМ за квартал', startDate:toIso(t), dueDate:toIso(addDays(t,3)), priority:'high', responsible:'Фомина Т. И.', status:'in_progress'},
+    {type:'meeting', title:'Планёрка заведующих отделениями', departmentId:ids['Стационар'], description:'Еженедельный разбор загрузки коек и переводов', startDate:toIso(addDays(t,1)), time:'09:00', priority:'medium', responsible:'Смирнова О. П.', status:'planned'},
+    {type:'project', title:'Внедрение единого протокола диагностики', departmentId:ids['Научно-методический отдел'], description:'Согласование протокола диагностики миелодиспластического синдрома', startDate:toIso(addDays(t,-10)), dueDate:toIso(addDays(t,12)), priority:'high', responsible:'Райнер Ю. Б.', status:'in_progress'},
+    {type:'event', title:'День донора крови', departmentId:ids['Поликлиника'], description:'Выездная акция совместно со станцией переливания крови', startDate:toIso(addDays(t,5)), time:'10:00', priority:'low', responsible:'Ковалёв Д. А.', status:'planned'},
+    {type:'task', title:'Закупка расходных материалов для афереза', departmentId:ids['Отделение трансплантации костного мозга'], description:'Оформить заявку в снабжение до конца недели', startDate:toIso(addDays(t,-2)), dueDate:toIso(addDays(t,-1)), priority:'high', responsible:'Багдасарян К. Р.', status:'in_progress'},
+    {type:'meeting', title:'Телемост с Филиалом №1', departmentId:ids['Филиал №1'], description:'Разбор сложных клинических случаев за месяц', startDate:toIso(addDays(t,2)), time:'14:30', priority:'medium', responsible:'Орлова Н. С.', status:'planned'},
+    {type:'project', title:'Модернизация ЛИС лаборатории', departmentId:ids['Лаборатория'], description:'Переход на новую лабораторную информационную систему', startDate:toIso(addDays(t,-20)), dueDate:toIso(addDays(t,30)), priority:'medium', responsible:'Фомина Т. И.', status:'planned'},
+    {type:'task', title:'Актуализировать список контактов филиалов', departmentId:ids['Научно-методический отдел'], description:'', startDate:toIso(addDays(t,-6)), dueDate:toIso(addDays(t,-4)), priority:'low', responsible:'Райнер Ю. Б.', status:'done'}
+  ];
+}
+function seedRequestDefs(ids){
+  var t = new Date();
+  return [
+    {
+      type:'request', title:'Консультация по сложному клиническому случаю',
+      description:'Пациент с рефрактерным течением острого лейкоза, требуется мнение отделения трансплантации по тактике ведения.',
+      departmentId:ids['Филиал №1'], targetDepartmentId:ids['Отделение трансплантации костного мозга'],
+      priority:'critical', status:'in_progress', responsible:'Багдасарян К. Р.', dueDate:toIso(addDays(t,1)),
+      comments:[
+        {author:'Орлова Н. С.', text:'Выслали полную выписку и результаты миелограммы, ждём рекомендаций.', createdAt:addDays(t,-1).toISOString()},
+        {author:'Багдасарян К. Р.', text:'Приняли в работу, соберём консилиум сегодня после обеда.', createdAt:addDays(t,0).toISOString()}
+      ]
+    },
+    {
+      type:'difficulty', title:'Задержка поставки реагентов',
+      description:'Поставщик сорвал сроки поставки реагентов для проточной цитометрии, под угрозой плановая диагностика.',
+      departmentId:ids['Лаборатория'], targetDepartmentId:'',
+      priority:'high', status:'new', responsible:'Фомина Т. И.', dueDate:toIso(addDays(t,4)),
+      comments:[]
+    },
+    {
+      type:'requirement', title:'Единый регламент передачи пациентов между отделениями',
+      description:'Нужно согласовать общий порядок передачи пациентов между поликлиникой и стационаром, чтобы не терять данные при переводе.',
+      departmentId:ids['Стационар'], targetDepartmentId:ids['Поликлиника'],
+      priority:'medium', status:'new', responsible:'Смирнова О. П.', dueDate:'',
+      comments:[]
+    },
+    {
+      type:'request', title:'Нехватка мест на плановую госпитализацию',
+      description:'Филиал №2 просит временно перенаправлять часть плановых госпитализаций в стационар центра.',
+      departmentId:ids['Филиал №2'], targetDepartmentId:ids['Стационар'],
+      priority:'medium', status:'on_hold', responsible:'Ткаченко И. В.', dueDate:toIso(addDays(t,7)),
+      comments:[
+        {author:'Ткаченко И. В.', text:'Ждём подтверждения от стационара по свободным датам в следующем месяце.', createdAt:addDays(t,-2).toISOString()}
+      ]
+    },
+    {
+      type:'requirement', title:'Согласование единого протокола сопроводительной терапии',
+      description:'Научно-методический отдел предлагает единый протокол профилактики тошноты при химиотерапии для всех подразделений.',
+      departmentId:ids['Научно-методический отдел'], targetDepartmentId:'',
+      priority:'low', status:'resolved', responsible:'Райнер Ю. Б.', dueDate:toIso(addDays(t,-3)),
+      comments:[
+        {author:'Райнер Ю. Б.', text:'Протокол утверждён и разослан во все подразделения.', createdAt:addDays(t,-3).toISOString()}
+      ]
+    }
+  ];
+}
+function seedStaffDefs(ids){
+  return [
+    {name:'Смирнова О. П.', position:'Заведующая стационаром', departmentId:ids['Стационар']},
+    {name:'Петров А. Н.', position:'Врач-гематолог', departmentId:ids['Стационар']},
+    {name:'Ковалёв Д. А.', position:'Заведующий поликлиникой', departmentId:ids['Поликлиника']},
+    {name:'Фомина Т. И.', position:'Заведующая лабораторией', departmentId:ids['Лаборатория']},
+    {name:'Гусева М. В.', position:'Врач лабораторной диагностики', departmentId:ids['Лаборатория']},
+    {name:'Багдасарян К. Р.', position:'Заведующий отделением ТКМ', departmentId:ids['Отделение трансплантации костного мозга']},
+    {name:'Орлова Н. С.', position:'Руководитель филиала', departmentId:ids['Филиал №1']},
+    {name:'Ткаченко И. В.', position:'Руководитель филиала', departmentId:ids['Филиал №2']},
+    {name:'Райнер Ю. Б.', position:'Руководитель отдела', departmentId:ids['Научно-методический отдел']}
+  ];
+}
+function seedReagentDefs(){
+  return [
+    {name:'Реагенты для проточной цитометрии', unit:'уп.', quantity:3, threshold:5, note:'Поставщик «БиоЛайн»'},
+    {name:'Тест-система ПЦР (гематологические маркеры)', unit:'кор.', quantity:12, threshold:6, note:''},
+    {name:'Гематологические красители', unit:'л', quantity:2, threshold:4, note:'Срочно требуется дозаказ'},
+    {name:'Пробирки вакуумные ЭДТА', unit:'уп.', quantity:40, threshold:15, note:''}
+  ];
+}
+function seedLabIncidentDefs(){
+  var t = new Date();
+  return [
+    {title:'Задержка поставки реагентов для цитометрии', description:'Поставщик сорвал сроки, под угрозой плановая диагностика на этой неделе.', severity:'high', status:'in_progress', reportedBy:'Фомина Т. И.', date:toIso(addDays(t,-1)), resolutionNote:''},
+    {title:'Сбой центрифуги на лаб-ресепшн', description:'Центрифуга №2 не набирает обороты, образцы направлены на резервное оборудование.', severity:'medium', status:'new', reportedBy:'Гусева М. В.', date:toIso(t), resolutionNote:''}
+  ];
+}
+function seedStockDefs(){
+  return [
+    {name:'Иматиниб 400 мг, таб.', unit:'уп.', quantity:18, threshold:10, note:''},
+    {name:'Ритуксимаб 500 мг, флак.', unit:'флак.', quantity:4, threshold:6, note:'Требует холодовой цепи'},
+    {name:'Физраствор 0.9%, 500 мл', unit:'фл.', quantity:120, threshold:40, note:''},
+    {name:'Противорвотные (ондансетрон)', unit:'уп.', quantity:7, threshold:8, note:''}
+  ];
+}
+function seedProcurementDefs(ids){
+  var t = new Date();
+  return [
+    {itemName:'Ритуксимаб 500 мг', quantity:10, unit:'флак.', priority:'critical', status:'new', requestedBy:'Ткаченко И. В.', departmentId:ids['Филиал №2'], dueDate:toIso(addDays(t,3)), note:'Для плановой терапии в следующем месяце'},
+    {itemName:'Противорвотные (ондансетрон)', quantity:20, unit:'уп.', priority:'medium', status:'ordered', requestedBy:'Смирнова О. П.', departmentId:ids['Стационар'], dueDate:toIso(addDays(t,7)), note:''},
+    {itemName:'Иматиниб 400 мг', quantity:15, unit:'уп.', priority:'low', status:'received', requestedBy:'Ковалёв Д. А.', departmentId:ids['Поликлиника'], dueDate:toIso(addDays(t,-2)), note:''}
+  ];
+}
+function seedMessageDefs(ids){
+  var t = new Date();
+  return [
+    {toType:'department', toId:ids['Лаборатория'], toLabel:'Лаборатория', fromRole:'admin', subject:'Приоритет по задаче «Обновить регистр пациентов»', body:'Пожалуйста, завершите сверку регистра до пятницы — данные нужны для отчёта руководству.', relatedType:'', relatedId:'', createdAt:addDays(t,-1).toISOString(), read:false},
+    {toType:'department', toId:ids['Стационар'], toLabel:'Стационар', fromRole:'pharma', subject:'Остаток ритуксимаба ниже порога', body:'На складе фармакологии заканчивается ритуксимаб — заявка на закуп уже оформлена, ожидаем поставку.', relatedType:'', relatedId:'', createdAt:addDays(t,0).toISOString(), read:true}
+  ];
+}
+function seedAllDb(){
+  var deptDefs = seedDeptDefs();
+  var ids = {};
+  var p = Promise.resolve();
+  deptDefs.forEach(function(d){
+    p = p.then(function(){ return db.collection('departments').add(d); }).then(function(ref){ ids[d.name] = ref.id; });
+  });
+  return p.then(function(){
+    var evDefs = seedEventDefs(ids);
+    var p2 = Promise.resolve();
+    evDefs.forEach(function(e){ p2 = p2.then(function(){ return db.collection('events').add(e); }); });
+    return p2;
+  }).then(function(){
+    var reqDefs = seedRequestDefs(ids);
+    var p3 = Promise.resolve();
+    reqDefs.forEach(function(r){ p3 = p3.then(function(){ return db.collection('requests').add(r); }); });
+    return p3;
+  }).then(function(){
+    var staffDefs = seedStaffDefs(ids);
+    var p4 = Promise.resolve();
+    staffDefs.forEach(function(s){ p4 = p4.then(function(){ return db.collection('staff').add(s); }); });
+    return p4;
+  }).then(function(){
+    var p5 = Promise.resolve();
+    seedReagentDefs().forEach(function(r){ p5 = p5.then(function(){ return db.collection('reagents').add(r); }); });
+    return p5;
+  }).then(function(){
+    var p6 = Promise.resolve();
+    seedLabIncidentDefs().forEach(function(i){ p6 = p6.then(function(){ return db.collection('labIncidents').add(i); }); });
+    return p6;
+  }).then(function(){
+    var p7 = Promise.resolve();
+    seedStockDefs().forEach(function(s){ p7 = p7.then(function(){ return db.collection('stock').add(s); }); });
+    return p7;
+  }).then(function(){
+    var p8 = Promise.resolve();
+    seedProcurementDefs(ids).forEach(function(p){ p8 = p8.then(function(){ return db.collection('procurement').add(p); }); });
+    return p8;
+  }).then(function(){
+    var p9 = Promise.resolve();
+    seedMessageDefs(ids).forEach(function(m){ p9 = p9.then(function(){ return db.collection('messages').add(m); }); });
+    return p9;
+  });
+}
+function seedLocal(){
+  var deptDefs = seedDeptDefs();
+  departments = deptDefs.map(function(d){ return Object.assign({id:genLocalId('dep')}, d); });
+  var ids = {}; departments.forEach(function(d){ ids[d.name]=d.id; });
+  events = seedEventDefs(ids).map(function(e){ return Object.assign({id:genLocalId('ev')}, e); });
+  requests = seedRequestDefs(ids).map(function(r){ return Object.assign({id:genLocalId('rq')}, r); });
+  staff = seedStaffDefs(ids).map(function(s){ return Object.assign({id:genLocalId('st')}, s); });
+  reagents = seedReagentDefs().map(function(r){ return Object.assign({id:genLocalId('rg')}, r); });
+  labIncidents = seedLabIncidentDefs().map(function(i){ return Object.assign({id:genLocalId('li')}, i); });
+  stock = seedStockDefs().map(function(s){ return Object.assign({id:genLocalId('sk')}, s); });
+  procurement = seedProcurementDefs(ids).map(function(p){ return Object.assign({id:genLocalId('pc')}, p); });
+  messages = seedMessageDefs(ids).map(function(m){ return Object.assign({id:genLocalId('ms')}, m); });
+}
+
+/* ================= init ================= */
+function init(){
+  applyTheme();
+  bindStaticEvents();
+  renderRoleBadge();
+  renderTabsBar();
+
+  var use = (window.claude && window.claude.use) ? window.claude.use('db') : Promise.resolve(null);
+  use.then(function(ns){
+    if(!ns){ usingDb=false; seedLocal(); renderApp(); return; }
+    db = ns; usingDb = true;
+    return db.collection('departments').get().then(function(snap){
+      if(snap.empty){ return seedAllDb(); }
+    }).then(function(){
+      subscribe();
+    }).catch(function(e){
+      console.error('seed/subscribe error', e);
+      subscribe();
+    });
+  }).catch(function(e){
+    console.error('db init error', e);
+    usingDb=false; seedLocal(); renderApp();
+  });
+}
+function subscribe(){
+  db.collection('departments').onSnapshot(function(snap){
+    departments = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+    renderApp();
+  }, onDbError);
+  db.collection('events').onSnapshot(function(snap){
+    events = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+    renderApp();
+  }, onDbError);
+  db.collection('requests').onSnapshot(function(snap){
+    requests = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+    renderApp();
+  }, onDbError);
+  db.collection('staff').onSnapshot(function(snap){
+    staff = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+    renderApp();
+  }, onDbError);
+  db.collection('reagents').onSnapshot(function(snap){
+    reagents = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+    renderApp();
+  }, onDbError);
+  db.collection('labIncidents').onSnapshot(function(snap){
+    labIncidents = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+    renderApp();
+  }, onDbError);
+  db.collection('stock').onSnapshot(function(snap){
+    stock = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+    renderApp();
+  }, onDbError);
+  db.collection('procurement').onSnapshot(function(snap){
+    procurement = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+    renderApp();
+  }, onDbError);
+  db.collection('messages').onSnapshot(function(snap){
+    messages = snap.docs.map(function(d){ return Object.assign({id:d.id}, d.data()); });
+    renderApp();
+  }, onDbError);
+}
+function onDbError(err){
+  console.error('db subscription error', err);
+  if(!dbErrored){
+    dbErrored = true;
+    usingDb = false;
+    if(!departments.length) seedLocal();
+    renderApp();
+  }
+}
+
+/* ================= theme ================= */
+function applyTheme(){
+  var root = document.documentElement;
+  if(themeChoice==='light' || themeChoice==='dark'){ root.setAttribute('data-theme', themeChoice); }
+  else { root.removeAttribute('data-theme'); }
+  var btns = document.querySelectorAll('#themeToggle button');
+  btns.forEach(function(b){
+    var c = b.getAttribute('data-theme-choice');
+    var isActive = (c==='system' && !themeChoice) || c===themeChoice;
+    b.classList.toggle('active', isActive);
+  });
+}
+
+/* ================= role ================= */
+function renderRoleBadge(){
+  var el = document.getElementById('roleBadge');
+  if(!el) return;
+  if(currentRole && ROLE_LABELS[currentRole]){
+    el.classList.add('has-role');
+    el.innerHTML = '<span class="role-badge-icon">'+roleIconSvg(currentRole)+'</span><span>'+esc(ROLE_LABELS[currentRole])+'</span>';
+  } else {
+    el.classList.remove('has-role');
+    el.innerHTML = '<span class="role-badge-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3.2"/><path d="M5 20c1.4-4 4-6 7-6s5.6 2 7 6"/></svg></span><span>Выбрать роль</span>';
+  }
+}
+function openRoleModal(){
+  var html = ''
+    +'<div class="modal-head"><h3>Кто вы?</h3><button class="modal-close" data-close>✕</button></div>'
+    +'<div class="role-hint">Роль сохранится в этом браузере и будет подставляться как ответственный в новых карточках и автор комментариев.</div>'
+    +'<div class="role-grid">'
+      +ROLES.map(function(r){
+        return '<button type="button" class="role-option'+(r.id===currentRole?' selected':'')+'" data-role="'+r.id+'">'
+          +'<span class="role-icon">'+roleIconSvg(r.id)+'</span><span>'+esc(r.label)+'</span>'
+        +'</button>';
+      }).join('')
+    +'</div>';
+  openModal(html, function(root){
+    root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    root.querySelectorAll('[data-role]').forEach(function(b){
+      b.addEventListener('click', function(){
+        currentRole = b.getAttribute('data-role');
+        try{ localStorage.setItem('hema_role', currentRole); }catch(e){}
+        renderRoleBadge();
+        fillQuickActions();
+        closeModal();
+      });
+    });
+  }, false);
+}
+
+/* ================= static bindings ================= */
+function bindStaticEvents(){
+  document.getElementById('themeToggle').addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-theme-choice]');
+    if(!btn) return;
+    var c = btn.getAttribute('data-theme-choice');
+    themeChoice = (c==='system') ? null : c;
+    try{ if(themeChoice) localStorage.setItem('hema_theme', themeChoice); else localStorage.removeItem('hema_theme'); }catch(err){}
+    applyTheme();
+  });
+  document.getElementById('roleBadge').addEventListener('click', openRoleModal);
+}
+
+/* ================= top-level render ================= */
+function renderApp(){
+  renderDemoBanner();
+  renderRoleBadge();
+  renderTabsBar();
+  if(activeTab !== lastRenderedTab){
+    renderContentFull();
+    lastRenderedTab = activeTab;
+  } else {
+    refreshDynamic();
+  }
+  if(!currentRole && !roleModalShown){
+    roleModalShown = true;
+    setTimeout(function(){ if(!currentRole) openRoleModal(); }, 500);
+  }
+}
+function renderDemoBanner(){
+  var slot = document.getElementById('demoBannerSlot');
+  if(!usingDb){
+    slot.innerHTML = '<div class="demo-banner">Демонстрационный режим: общее хранилище недоступно, изменения не будут сохранены.</div>';
+  } else {
+    slot.innerHTML = '';
+  }
+}
+function renderTabsBar(){
+  var el = document.getElementById('tabsBar');
+  var unread = messages.filter(function(m){ return !m.read; }).length;
+  el.innerHTML = TABS.map(function(t){
+    var badge = (t.id==='messages' && unread>0) ? '<span class="tab-badge">'+unread+'</span>' : '';
+    return '<button class="tab-btn'+(t.id===activeTab?' active':'')+'" data-tab="'+t.id+'">'+t.label+badge+'</button>';
+  }).join('');
+  el.onclick = function(e){
+    var btn = e.target.closest('button[data-tab]');
+    if(!btn) return;
+    activeTab = btn.getAttribute('data-tab');
+    renderApp();
+  };
+}
+function renderContentFull(){
+  var el = document.getElementById('content');
+  if(activeTab==='overview') el.innerHTML = overviewHtml();
+  else if(activeTab==='calendar') el.innerHTML = calendarHtml();
+  else if(activeTab==='events') el.innerHTML = eventsTabHtml();
+  else if(activeTab==='requests') el.innerHTML = requestsTabHtml();
+  else if(activeTab==='reagents') el.innerHTML = reagentsTabHtml();
+  else if(activeTab==='pharmacy') el.innerHTML = pharmacyTabHtml();
+  else if(activeTab==='messages') el.innerHTML = messagesTabHtml();
+  else el.innerHTML = departmentsTabHtml();
+  bindContentEvents();
+  refreshDynamic();
+}
+function refreshDynamic(){
+  if(activeTab==='overview') fillOverviewDynamic();
+  else if(activeTab==='calendar') fillCalendarGrid();
+  else if(activeTab==='events') fillEventsList();
+  else if(activeTab==='requests') fillRequestsBoard();
+  else if(activeTab==='reagents') fillReagentsDynamic();
+  else if(activeTab==='pharmacy') fillPharmacyDynamic();
+  else if(activeTab==='messages') fillMessagesDynamic();
+  else if(activeTab==='departments') fillDepartmentsGrid();
+}
+function bindContentEvents(){
+  var el = document.getElementById('content');
+  el.onclick = function(e){
+    var addEvBtn = e.target.closest('[data-action="add-event"]');
+    if(addEvBtn){ openEventModal(null, addEvBtn.getAttribute('data-date')||''); return; }
+    var addReqBtn = e.target.closest('[data-action="add-request"]');
+    if(addReqBtn){ openRequestModal(null); return; }
+    var addDepBtn = e.target.closest('[data-action="add-department"]');
+    if(addDepBtn){ openDepartmentModal(null); return; }
+    var addReagentBtn = e.target.closest('[data-action="add-reagent"]');
+    if(addReagentBtn){ openReagentModal(null); return; }
+    var addIncidentBtn = e.target.closest('[data-action="add-incident"]');
+    if(addIncidentBtn){ openIncidentModal(null); return; }
+    var addStockBtn = e.target.closest('[data-action="add-stock"]');
+    if(addStockBtn){ openStockModal(null); return; }
+    var addProcBtn = e.target.closest('[data-action="add-procurement"]');
+    if(addProcBtn){ openProcurementModal(null); return; }
+    var addMsgBtn = e.target.closest('[data-action="add-message"]');
+    if(addMsgBtn){ openMessageModal(null); return; }
+
+    var evRow = e.target.closest('[data-open-event]');
+    if(evRow){ openEventModal(evRow.getAttribute('data-open-event')); return; }
+    var reqCard = e.target.closest('[data-open-request]');
+    if(reqCard){ openRequestModal(reqCard.getAttribute('data-open-request')); return; }
+    var depCard = e.target.closest('[data-open-department]');
+    if(depCard){ openDepartmentModal(depCard.getAttribute('data-open-department')); return; }
+    var reagentRow = e.target.closest('[data-open-reagent]');
+    if(reagentRow){ openReagentModal(reagentRow.getAttribute('data-open-reagent')); return; }
+    var incidentCard = e.target.closest('[data-open-incident]');
+    if(incidentCard){ openIncidentModal(incidentCard.getAttribute('data-open-incident')); return; }
+    var stockRow = e.target.closest('[data-open-stock]');
+    if(stockRow){ openStockModal(stockRow.getAttribute('data-open-stock')); return; }
+    var procRow = e.target.closest('[data-open-procurement]');
+    if(procRow){ openProcurementModal(procRow.getAttribute('data-open-procurement')); return; }
+    var msgRow = e.target.closest('[data-open-message]');
+    if(msgRow){ openMessageModal(msgRow.getAttribute('data-open-message')); return; }
+    var jumpTab = e.target.closest('[data-jump-tab]');
+    if(jumpTab){ activeTab = jumpTab.getAttribute('data-jump-tab'); lastRenderedTab=null; renderApp(); return; }
+    var quickBtn = e.target.closest('[data-quick]');
+    if(quickBtn){
+      var qk = quickBtn.getAttribute('data-quick');
+      if(qk==='pick-role') openRoleModal();
+      else if(qk==='assign-task') openEventModal(null);
+      else if(qk==='compose-message') openMessageModal(null);
+      else if(qk==='clinical-task') openEventModal(null, '', 'task');
+      else if(qk==='protocol-event') openEventModal(null, '', 'project');
+      else if(qk==='procurement-new'){ activeTab='pharmacy'; lastRenderedTab=null; renderApp(); setTimeout(function(){ openProcurementModal(null); },0); }
+      else if(qk==='view-stock'){ activeTab='pharmacy'; lastRenderedTab=null; renderApp(); }
+      else if(qk==='reagent-new'){ activeTab='reagents'; lastRenderedTab=null; renderApp(); setTimeout(function(){ openReagentModal(null); },0); }
+      else if(qk==='incident-new'){ activeTab='reagents'; lastRenderedTab=null; renderApp(); setTimeout(function(){ openIncidentModal(null); },0); }
+      return;
+    }
+    var depJump = e.target.closest('[data-jump-department]');
+    if(depJump){
+      evFilters = {dept:depJump.getAttribute('data-jump-department'), type:'', status:'', q:''};
+      activeTab='events'; lastRenderedTab=null; renderApp(); return;
+    }
+    var dayCell = e.target.closest('[data-open-day]');
+    if(dayCell){ openDayModal(dayCell.getAttribute('data-open-day')); return; }
+    var calPrev = e.target.closest('[data-cal-prev]');
+    if(calPrev){ calCursor = new Date(calCursor.getFullYear(), calCursor.getMonth()-1, 1); fillCalendarGrid(); updateCalTitle(); return; }
+    var calNext = e.target.closest('[data-cal-next]');
+    if(calNext){ calCursor = new Date(calCursor.getFullYear(), calCursor.getMonth()+1, 1); fillCalendarGrid(); updateCalTitle(); return; }
+    var calToday = e.target.closest('[data-cal-today]');
+    if(calToday){ calCursor = startOfMonth(new Date()); fillCalendarGrid(); updateCalTitle(); return; }
+  };
+  el.oninput = function(e){
+    if(e.target.id==='evSearch'){ evFilters.q = e.target.value; fillEventsList(); }
+    if(e.target.id==='reqSearch'){ reqFilters.q = e.target.value; fillRequestsBoard(); }
+    if(e.target.id==='msgSearch'){ msgFilters.q = e.target.value; fillMessagesDynamic(); }
+  };
+  el.onchange = function(e){
+    if(e.target.id==='evDeptFilter'){ evFilters.dept = e.target.value; fillEventsList(); }
+    if(e.target.id==='evTypeFilter'){ evFilters.type = e.target.value; fillEventsList(); }
+    if(e.target.id==='evStatusFilter'){ evFilters.status = e.target.value; fillEventsList(); }
+    if(e.target.id==='reqDeptFilter'){ reqFilters.dept = e.target.value; fillRequestsBoard(); }
+    if(e.target.id==='reqTypeFilter'){ reqFilters.type = e.target.value; fillRequestsBoard(); }
+    if(e.target.id==='reqStatusFilter'){ reqFilters.status = e.target.value; fillRequestsBoard(); }
+    if(e.target.id==='reqPriorityFilter'){ reqFilters.priority = e.target.value; fillRequestsBoard(); }
+    if(e.target.id==='msgDeptFilter'){ msgFilters.dept = e.target.value; fillMessagesDynamic(); }
+  };
+}
+
+/* ================= OVERVIEW ================= */
+var ROLE_QUICK_ACTIONS = {
+  admin: [
+    {key:'assign-task', label:'+ Назначить задачу'},
+    {key:'compose-message', label:'✉ Написать сообщение'}
+  ],
+  clinicians: [
+    {key:'clinical-task', label:'+ Клиническая задача'},
+    {key:'protocol-event', label:'+ Протокол / научное событие'}
+  ],
+  pharma: [
+    {key:'procurement-new', label:'+ Заявка на закуп'},
+    {key:'view-stock', label:'Смотреть остатки на складе'}
+  ],
+  lab: [
+    {key:'reagent-new', label:'+ Реагент'},
+    {key:'incident-new', label:'+ Сообщить об инциденте'}
+  ]
+};
+function overviewHtml(){
+  return ''
+    +'<div class="kpi-grid" id="kpiGrid"></div>'
+    +'<div class="panel" style="margin-bottom:22px;"><h3>Быстрые действия</h3><div class="quick-actions" id="quickActionsList"></div></div>'
+    +'<div class="panels-row">'
+      +'<div class="panel"><h3>Ближайшие события и сроки</h3><div class="panel-list" id="upcomingList"></div></div>'
+      +'<div class="panel"><h3>Заявки, требующие внимания</h3><div class="panel-list" id="attentionList"></div></div>'
+    +'</div>'
+    +'<div class="section-heading"><h2>Подразделения</h2></div>'
+    +'<div class="dept-grid" id="overviewDeptGrid"></div>';
+}
+function fillQuickActions(){
+  var el = document.getElementById('quickActionsList');
+  if(!el) return;
+  if(!currentRole){
+    el.innerHTML = '<button class="btn" data-quick="pick-role">Выбрать роль, чтобы увидеть быстрые действия</button>';
+    return;
+  }
+  var acts = ROLE_QUICK_ACTIONS[currentRole] || [];
+  el.innerHTML = acts.map(function(a,i){
+    return '<button class="btn'+(i===0?' btn-primary':'')+'" data-quick="'+a.key+'">'+a.label+'</button>';
+  }).join('') || '<span class="empty-note">Для этой роли быстрых действий пока нет.</span>';
+}
+function fillOverviewDynamic(){
+  fillQuickActions();
+  var kpiEl = document.getElementById('kpiGrid');
+  if(!kpiEl) return;
+  var today = todayIso();
+  var in7 = toIso(addDays(new Date(),7));
+  var activeTasksProjects = events.filter(function(e){ return (e.type==='task'||e.type==='project') && computedStatus(e)!=='done'; }).length;
+  var deadlines7 = events.filter(function(e){ var eff=effectiveDate(e); return eff && eff>=today && eff<=in7 && e.status!=='done'; }).length;
+  var projectsInProgress = events.filter(function(e){ return e.type==='project' && e.status==='in_progress'; }).length;
+  var openRequests = requests.filter(function(r){ return r.status!=='resolved'; }).length;
+  var kpis = [
+    {v:activeTasksProjects, l:'Активные задачи и проекты'},
+    {v:deadlines7, l:'Дедлайны в ближайшие 7 дней'},
+    {v:projectsInProgress, l:'Проекты в работе'},
+    {v:openRequests, l:'Открытые заявки'},
+    {v:departments.length, l:'Подразделений'}
+  ];
+  kpiEl.innerHTML = kpis.map(function(k){ return '<div class="kpi-tile"><div class="kpi-value mono">'+k.v+'</div><div class="kpi-label">'+k.l+'</div></div>'; }).join('');
+
+  var upcoming = events.filter(function(e){ return computedStatus(e)!=='done'; })
+    .slice().sort(function(a,b){ return (effectiveDate(a)||'9999').localeCompare(effectiveDate(b)||'9999'); })
+    .slice(0,6);
+  var upcomingEl = document.getElementById('upcomingList');
+  upcomingEl.innerHTML = upcoming.length ? upcoming.map(function(e){
+    var d = deptById(e.departmentId);
+    var st = computedStatus(e);
+    return '<div class="list-row" data-open-event="'+e.id+'">'
+      +(d?'<span class="dept-dot" style="background:'+d.color+'"></span>':'')
+      +'<span class="lr-title">'+esc(e.title)+'</span>'
+      +statusPill(st, EV_STATUS_LABELS)
+      +'<span class="lr-meta mono">'+fmtDate(effectiveDate(e))+'</span>'
+    +'</div>';
+  }).join('') : '<div class="empty-note">Нет ближайших событий.</div>';
+
+  var attention = requests.filter(function(r){ return r.status!=='resolved'; })
+    .slice().sort(function(a,b){
+      var pd = (PRIORITY_ORDER[a.priority]||9) - (PRIORITY_ORDER[b.priority]||9);
+      if(pd!==0) return pd;
+      return (a.dueDate||'9999').localeCompare(b.dueDate||'9999');
+    }).slice(0,5);
+  var attentionEl = document.getElementById('attentionList');
+  attentionEl.innerHTML = attention.length ? attention.map(function(r){
+    return '<div class="list-row" data-open-request="'+r.id+'">'
+      +'<span class="pill priority-'+r.priority+'" style="color:var(--priority-'+r.priority+');background:var(--priority-'+r.priority+'-bg)">'+esc(REQ_PRIORITY_LABELS[r.priority])+'</span>'
+      +'<span class="lr-title">'+esc(r.title)+'</span>'
+      +'<span class="lr-meta mono">'+(r.dueDate?fmtDate(r.dueDate):'без срока')+'</span>'
+    +'</div>';
+  }).join('') : '<div class="empty-note">Нет заявок, требующих внимания.</div>';
+
+  var depGridEl = document.getElementById('overviewDeptGrid');
+  depGridEl.innerHTML = departments.map(function(d){ return departmentOverviewCardHtml(d); }).join('') || '<div class="empty-note">Подразделения не добавлены.</div>';
+}
+function departmentOverviewCardHtml(d){
+  var deptEvents = events.filter(function(e){ return e.departmentId===d.id; });
+  var open = deptEvents.filter(function(e){ return computedStatus(e)!=='done'; });
+  var nearest = open.slice().sort(function(a,b){ return (effectiveDate(a)||'9999').localeCompare(effectiveDate(b)||'9999'); })[0];
+  return '<div class="dept-card" data-jump-department="'+d.id+'">'
+    +'<div class="dept-card-top"><span class="dept-dot" style="background:'+d.color+'"></span><span class="name">'+esc(d.name)+'</span></div>'
+    +'<div class="head">'+esc(d.head||'Руководитель не указан')+'</div>'
+    +'<div class="counts"><span>Открыто / всего</span><span class="mono">'+open.length+' / '+deptEvents.length+'</span></div>'
+    +(nearest ? '<div class="nearest">Ближайший срок: <span class="mono">'+fmtDate(effectiveDate(nearest))+'</span> · '+esc((EV_STATUS_LABELS[computedStatus(nearest)]||''))+'</div>' : '<div class="nearest">Нет активных сроков</div>')
+  +'</div>';
+}
+
+/* ================= CALENDAR ================= */
+function calendarHtml(){
+  return ''
+    +'<div class="cal-toolbar">'
+      +'<div class="cal-title" id="calTitle"></div>'
+      +'<div class="cal-nav">'
+        +'<button class="btn btn-sm" data-cal-prev>← Пред.</button>'
+        +'<button class="btn btn-sm" data-cal-today>Сегодня</button>'
+        +'<button class="btn btn-sm" data-cal-next>След. →</button>'
+      +'</div>'
+    +'</div>'
+    +'<div class="cal-grid" id="calGrid"></div>'
+    +'<div class="cal-legend" id="calLegend"></div>';
+}
+function updateCalTitle(){
+  var t = document.getElementById('calTitle');
+  if(t) t.textContent = MONTHS[calCursor.getMonth()]+' '+calCursor.getFullYear();
+}
+function fillCalendarGrid(){
+  var gridEl = document.getElementById('calGrid');
+  if(!gridEl) return;
+  updateCalTitle();
+  var byDate = {};
+  events.forEach(function(e){
+    var dates = [e.startDate];
+    if((e.type==='task'||e.type==='project') && e.dueDate && e.dueDate!==e.startDate) dates.push(e.dueDate);
+    dates.forEach(function(dt){
+      if(!dt) return;
+      if(!byDate[dt]) byDate[dt]=[];
+      byDate[dt].push(e);
+    });
+  });
+  var y = calCursor.getFullYear(), m = calCursor.getMonth();
+  var first = new Date(y,m,1);
+  var leading = (first.getDay()+6)%7;
+  var total = daysInMonth(calCursor);
+  var cells = [];
+  for(var i=0;i<leading;i++) cells.push(null);
+  for(var d=1; d<=total; d++) cells.push(d);
+  while(cells.length % 7 !== 0) cells.push(null);
+  var today = todayIso();
+  var html = DOW.map(function(w){ return '<div class="cal-dow">'+w+'</div>'; }).join('');
+  html += cells.map(function(d){
+    if(d===null) return '<div class="cal-cell blank"></div>';
+    var iso = y+'-'+pad(m+1)+'-'+pad(d);
+    var isToday = iso===today;
+    var dayEvents = byDate[iso]||[];
+    var visible = dayEvents.slice(0,4);
+    var extra = dayEvents.length - visible.length;
+    var chips = visible.map(function(e){
+      var dep = deptById(e.departmentId);
+      var color = dep ? dep.color : 'var(--text-faint)';
+      return '<div class="cal-chip"><span class="dept-dot" style="background:'+color+'"></span><span>'+esc(e.title)+'</span></div>';
+    }).join('');
+    return '<div class="cal-cell'+(isToday?' today':'')+'" data-open-day="'+iso+'">'
+      +'<div class="cal-daynum">'+d+'</div>'
+      +chips
+      +(extra>0 ? '<div class="cal-more">+'+extra+'</div>' : '')
+    +'</div>';
+  }).join('');
+  gridEl.innerHTML = html;
+
+  var legendEl = document.getElementById('calLegend');
+  legendEl.innerHTML = departments.map(function(dep){
+    return '<span class="dept-chip"><span class="dept-dot" style="background:'+dep.color+'"></span>'+esc(dep.name)+'</span>';
+  }).join('');
+}
+function openDayModal(iso){
+  var dayEvents = events.filter(function(e){
+    var dates=[e.startDate];
+    if((e.type==='task'||e.type==='project') && e.dueDate && e.dueDate!==e.startDate) dates.push(e.dueDate);
+    return dates.indexOf(iso)>-1;
+  });
+  var html = ''
+    +'<div class="modal-head"><h3>'+fmtDate(iso)+'</h3><button class="modal-close" data-close>✕</button></div>'
+    +'<div class="panel-list" style="margin-bottom:14px;">'
+      +(dayEvents.length ? dayEvents.map(function(e){
+        var d = deptById(e.departmentId);
+        return '<div class="list-row" data-open-event="'+e.id+'" data-close-parent="1">'
+          +(d?'<span class="dept-dot" style="background:'+d.color+'"></span>':'')
+          +'<span class="lr-title">'+esc(e.title)+'</span>'
+          +statusPill(computedStatus(e), EV_STATUS_LABELS)
+        +'</div>';
+      }).join('') : '<div class="empty-note">На эту дату событий нет.</div>')
+    +'</div>'
+    +'<button class="btn btn-primary" data-action="add-event" data-date="'+iso+'" data-close-parent="1">+ Добавить событие</button>';
+  openModal(html, function(root){
+    root.addEventListener('click', function(e){
+      if(e.target.closest('[data-close]')) { closeModal(); return; }
+      if(e.target.closest('[data-close-parent]')){ closeModal(); }
+    });
+  });
+}
+
+/* ================= EVENTS TAB ================= */
+function eventsTabHtml(){
+  return ''
+    +'<div class="filter-bar">'
+      +'<div class="field"><label>Подразделение</label><select id="evDeptFilter">'+'<option value="">Все</option>'+deptOptions(evFilters.dept,false)+'</select></div>'
+      +'<div class="field"><label>Тип</label><select id="evTypeFilter">'
+        +'<option value=""'+(!evFilters.type?' selected':'')+'>Все</option>'
+        +Object.keys(TYPE_LABELS).map(function(k){ return '<option value="'+k+'"'+(evFilters.type===k?' selected':'')+'>'+TYPE_LABELS[k]+'</option>'; }).join('')
+      +'</select></div>'
+      +'<div class="field"><label>Статус</label><select id="evStatusFilter">'
+        +'<option value=""'+(!evFilters.status?' selected':'')+'>Все</option>'
+        +Object.keys(EV_STATUS_LABELS).map(function(k){ return '<option value="'+k+'"'+(evFilters.status===k?' selected':'')+'>'+EV_STATUS_LABELS[k]+'</option>'; }).join('')
+      +'</select></div>'
+      +'<div class="field search"><label>Поиск</label><input type="text" id="evSearch" placeholder="Название, ответственный, описание…" value="'+esc(evFilters.q)+'"></div>'
+      +'<button class="btn btn-primary" data-action="add-event" style="align-self:flex-end;">+ Добавить событие</button>'
+    +'</div>'
+    +'<div class="table-wrap"><table>'
+      +'<thead><tr><th>Тип</th><th>Название</th><th>Подразделение</th><th>Ответственный</th><th>Даты</th><th>Статус</th></tr></thead>'
+      +'<tbody id="eventsTableBody"></tbody>'
+    +'</table></div>';
+}
+function fillEventsList(){
+  var body = document.getElementById('eventsTableBody');
+  if(!body) return;
+  var q = (evFilters.q||'').toLowerCase();
+  var list = events.filter(function(e){
+    if(evFilters.dept && e.departmentId!==evFilters.dept) return false;
+    if(evFilters.type && e.type!==evFilters.type) return false;
+    if(evFilters.status){
+      var st = computedStatus(e);
+      if(evFilters.status!==st) return false;
+    }
+    if(q){
+      var hay = ((e.title||'')+' '+(e.responsible||'')+' '+(e.description||'')).toLowerCase();
+      if(hay.indexOf(q)===-1) return false;
+    }
+    return true;
+  }).slice().sort(function(a,b){ return (effectiveDate(a)||'9999').localeCompare(effectiveDate(b)||'9999'); });
+
+  if(!list.length){ body.innerHTML = '<tr><td colspan="6"><div class="empty-state">Ничего не найдено по заданным фильтрам.</div></td></tr>'; return; }
+  body.innerHTML = list.map(function(e){
+    var d = deptById(e.departmentId);
+    var st = computedStatus(e);
+    var dateStr = e.type==='task'||e.type==='project'
+      ? fmtDate(e.startDate)+(e.dueDate?(' → '+fmtDate(e.dueDate)):'')
+      : fmtDate(e.startDate)+(e.time?(' '+e.time):'');
+    return '<tr data-open-event="'+e.id+'">'
+      +'<td>'+TYPE_LABELS[e.type]+'</td>'
+      +'<td><div class="ev-title">'+esc(e.title)+'</div>'+(e.description?'<div class="ev-desc">'+esc(e.description)+'</div>':'')+'</td>'
+      +'<td>'+(d?('<span class="dept-chip"><span class="dept-dot" style="background:'+d.color+'"></span>'+esc(d.name)+'</span>'):'—')+'</td>'
+      +'<td>'+esc(e.responsible||'—')+'</td>'
+      +'<td class="mono">'+dateStr+'</td>'
+      +'<td>'+statusPill(st, EV_STATUS_LABELS)+'</td>'
+    +'</tr>';
+  }).join('');
+}
+
+/* ================= REQUESTS TAB ================= */
+function requestsTabHtml(){
+  return ''
+    +'<div class="filter-bar">'
+      +'<div class="field"><label>Подразделение</label><select id="reqDeptFilter">'+'<option value="">Все</option>'+deptOptions(reqFilters.dept,false)+'</select></div>'
+      +'<div class="field"><label>Тип</label><select id="reqTypeFilter">'
+        +'<option value=""'+(!reqFilters.type?' selected':'')+'>Все</option>'
+        +Object.keys(REQ_TYPE_LABELS).map(function(k){ return '<option value="'+k+'"'+(reqFilters.type===k?' selected':'')+'>'+REQ_TYPE_LABELS[k]+'</option>'; }).join('')
+      +'</select></div>'
+      +'<div class="field"><label>Приоритет</label><select id="reqPriorityFilter">'
+        +'<option value=""'+(!reqFilters.priority?' selected':'')+'>Все</option>'
+        +Object.keys(REQ_PRIORITY_LABELS).map(function(k){ return '<option value="'+k+'"'+(reqFilters.priority===k?' selected':'')+'>'+REQ_PRIORITY_LABELS[k]+'</option>'; }).join('')
+      +'</select></div>'
+      +'<div class="field search"><label>Поиск</label><input type="text" id="reqSearch" placeholder="Название, описание…" value="'+esc(reqFilters.q)+'"></div>'
+      +'<button class="btn btn-primary" data-action="add-request" style="align-self:flex-end;">+ Заявка</button>'
+    +'</div>'
+    +'<div class="board" id="reqBoard">'
+      +REQ_STATUS_COLS.map(function(s){
+        return '<div class="board-col"><div class="board-col-head"><h4>'+REQ_STATUS_LABELS[s]+'</h4><span class="count mono" id="reqCount-'+s+'"></span></div><div class="board-cards" id="reqCol-'+s+'"></div></div>';
+      }).join('')
+    +'</div>';
+}
+function fillRequestsBoard(){
+  var anyCol = document.getElementById('reqCol-new');
+  if(!anyCol) return;
+  var q = (reqFilters.q||'').toLowerCase();
+  var list = requests.filter(function(r){
+    if(reqFilters.dept && r.departmentId!==reqFilters.dept && r.targetDepartmentId!==reqFilters.dept) return false;
+    if(reqFilters.type && r.type!==reqFilters.type) return false;
+    if(reqFilters.status && r.status!==reqFilters.status) return false;
+    if(reqFilters.priority && r.priority!==reqFilters.priority) return false;
+    if(q){
+      var hay = ((r.title||'')+' '+(r.description||'')).toLowerCase();
+      if(hay.indexOf(q)===-1) return false;
+    }
+    return true;
+  });
+  REQ_STATUS_COLS.forEach(function(s){
+    var colItems = list.filter(function(r){ return r.status===s; }).sort(function(a,b){
+      var pd=(PRIORITY_ORDER[a.priority]||9)-(PRIORITY_ORDER[b.priority]||9);
+      if(pd!==0) return pd;
+      return (a.dueDate||'9999').localeCompare(b.dueDate||'9999');
+    });
+    document.getElementById('reqCount-'+s).textContent = colItems.length;
+    var colEl = document.getElementById('reqCol-'+s);
+    colEl.innerHTML = colItems.length ? colItems.map(requestCardHtml).join('') : '<div class="empty-note">Пусто</div>';
+  });
+}
+function requestCardHtml(r){
+  var from = deptById(r.departmentId);
+  var to = r.targetDepartmentId ? deptById(r.targetDepartmentId) : null;
+  return '<div class="req-card" style="border-left-color:var(--priority-'+r.priority+')" data-open-request="'+r.id+'">'
+    +'<div class="req-type">'+REQ_TYPE_LABELS[r.type]+'</div>'
+    +'<div class="req-title">'+esc(r.title)+'</div>'
+    +(r.description ? '<div class="req-desc">'+esc(r.description)+'</div>' : '')
+    +'<div class="req-meta">'
+      +(from ? '<span class="dept-chip"><span class="dept-dot" style="background:'+from.color+'"></span>'+esc(from.name)+'</span>' : '')
+      +(to ? '<span>→</span><span class="dept-chip"><span class="dept-dot" style="background:'+to.color+'"></span>'+esc(to.name)+'</span>' : '')
+    +'</div>'
+    +'<div class="req-foot">'
+      +'<span>'+(r.dueDate ? ('срок '+fmtDate(r.dueDate)) : 'без срока')+'</span>'
+      +'<span>'+((r.comments&&r.comments.length) ? (r.comments.length+' коммент.') : '')+'</span>'
+    +'</div>'
+  +'</div>';
+}
+
+/* ================= DEPARTMENTS TAB ================= */
+function departmentsTabHtml(){
+  return ''
+    +'<div class="section-heading"><h2>Подразделения и филиалы</h2><button class="btn btn-primary" data-action="add-department">+ Подразделение</button></div>'
+    +'<div class="dept-grid" id="departmentsGrid"></div>';
+}
+function fillDepartmentsGrid(){
+  var el = document.getElementById('departmentsGrid');
+  if(!el) return;
+  el.innerHTML = departments.length ? departments.map(function(d){
+    var count = events.filter(function(e){ return e.departmentId===d.id; }).length;
+    return '<div class="dept-card" data-open-department="'+d.id+'">'
+      +'<div class="dept-card-top"><span class="dept-dot" style="background:'+d.color+'"></span><span class="name">'+esc(d.name)+'</span></div>'
+      +'<div class="head">'+esc(d.head||'Руководитель не указан')+'</div>'
+      +(d.note ? '<div class="nearest">'+esc(d.note)+'</div>' : '')
+      +'<div class="counts" style="margin-top:8px;"><span>Связанных событий</span><span class="mono">'+count+'</span></div>'
+    +'</div>';
+  }).join('') : '<div class="empty-state">Подразделения не добавлены.</div>';
+}
+
+/* ================= REAGENTS & INCIDENTS TAB (lab) ================= */
+function reagentStatus(r){
+  if(r.quantity<=0) return {code:'overdue', label:'Нет в наличии'};
+  if(r.quantity<=r.threshold) return {code:'in_progress', label:'Заканчивается'};
+  return {code:'done', label:'В наличии'};
+}
+function reagentsTabHtml(){
+  return ''
+    +'<div class="section-heading"><h2>Реагенты (склад лаборатории)</h2><button class="btn btn-primary" data-action="add-reagent">+ Добавить реагент</button></div>'
+    +'<div class="table-wrap" style="margin-bottom:26px;"><table>'
+      +'<thead><tr><th>Название</th><th>Остаток</th><th>Критический порог</th><th>Статус</th><th>Заметка</th></tr></thead>'
+      +'<tbody id="reagentsTableBody"></tbody>'
+    +'</table></div>'
+    +'<div class="section-heading"><h2>Инциденты лаб-ресепшн</h2><button class="btn btn-primary" data-action="add-incident">+ Сообщить об инциденте</button></div>'
+    +'<div class="board board-3" id="incidentBoard">'
+      +INCIDENT_STATUS_COLS.map(function(s){
+        return '<div class="board-col"><div class="board-col-head"><h4>'+INCIDENT_STATUS_LABELS[s]+'</h4><span class="count mono" id="incCount-'+s+'"></span></div><div class="board-cards" id="incCol-'+s+'"></div></div>';
+      }).join('')
+    +'</div>';
+}
+function fillReagentsDynamic(){
+  var body = document.getElementById('reagentsTableBody');
+  if(!body) return;
+  var list = reagents.slice().sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+  body.innerHTML = list.length ? list.map(function(r){
+    var st = reagentStatus(r);
+    return '<tr data-open-reagent="'+r.id+'">'
+      +'<td class="ev-title">'+esc(r.name)+'</td>'
+      +'<td class="mono">'+r.quantity+' '+esc(r.unit||'')+'</td>'
+      +'<td class="mono">'+r.threshold+' '+esc(r.unit||'')+'</td>'
+      +'<td><span class="pill status-'+st.code+'">'+st.label+'</span></td>'
+      +'<td>'+esc(r.note||'—')+'</td>'
+    +'</tr>';
+  }).join('') : '<tr><td colspan="5"><div class="empty-state">Реагенты не добавлены.</div></td></tr>';
+
+  INCIDENT_STATUS_COLS.forEach(function(s){
+    var items = labIncidents.filter(function(i){ return i.status===s; }).sort(function(a,b){
+      var pd=(PRIORITY_ORDER[a.severity]||9)-(PRIORITY_ORDER[b.severity]||9);
+      if(pd!==0) return pd;
+      return (b.date||'').localeCompare(a.date||'');
+    });
+    var countEl = document.getElementById('incCount-'+s);
+    if(countEl) countEl.textContent = items.length;
+    var colEl = document.getElementById('incCol-'+s);
+    if(!colEl) return;
+    colEl.innerHTML = items.length ? items.map(function(i){
+      return '<div class="req-card" style="border-left-color:var(--priority-'+i.severity+')" data-open-incident="'+i.id+'">'
+        +'<div class="req-type">'+esc(SEVERITY_LABELS[i.severity])+'</div>'
+        +'<div class="req-title">'+esc(i.title)+'</div>'
+        +(i.description ? '<div class="req-desc">'+esc(i.description)+'</div>' : '')
+        +'<div class="req-foot"><span>'+fmtDate(i.date)+'</span><span>'+esc(i.reportedBy||'')+'</span></div>'
+      +'</div>';
+    }).join('') : '<div class="empty-note">Пусто</div>';
+  });
+}
+
+/* ================= PHARMACY TAB (warehouse & procurement) ================= */
+function pharmacyTabHtml(){
+  return ''
+    +'<div class="section-heading"><h2>Остатки на складе</h2><button class="btn btn-primary" data-action="add-stock">+ Добавить позицию</button></div>'
+    +'<div class="table-wrap" style="margin-bottom:26px;"><table>'
+      +'<thead><tr><th>Название</th><th>Остаток</th><th>Критический порог</th><th>Статус</th><th>Заметка</th></tr></thead>'
+      +'<tbody id="stockTableBody"></tbody>'
+    +'</table></div>'
+    +'<div class="section-heading"><h2>Заявки на закуп</h2><button class="btn btn-primary" data-action="add-procurement">+ Новая заявка на закуп</button></div>'
+    +'<div class="table-wrap"><table>'
+      +'<thead><tr><th>Позиция</th><th>Кол-во</th><th>Подразделение</th><th>Заявитель</th><th>Приоритет</th><th>Срок</th><th>Статус</th></tr></thead>'
+      +'<tbody id="procTableBody"></tbody>'
+    +'</table></div>';
+}
+function fillPharmacyDynamic(){
+  var sBody = document.getElementById('stockTableBody');
+  if(!sBody) return;
+  var sList = stock.slice().sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+  sBody.innerHTML = sList.length ? sList.map(function(s){
+    var st = reagentStatus(s);
+    return '<tr data-open-stock="'+s.id+'">'
+      +'<td class="ev-title">'+esc(s.name)+'</td>'
+      +'<td class="mono">'+s.quantity+' '+esc(s.unit||'')+'</td>'
+      +'<td class="mono">'+s.threshold+' '+esc(s.unit||'')+'</td>'
+      +'<td><span class="pill status-'+st.code+'">'+st.label+'</span></td>'
+      +'<td>'+esc(s.note||'—')+'</td>'
+    +'</tr>';
+  }).join('') : '<tr><td colspan="5"><div class="empty-state">Склад пуст.</div></td></tr>';
+
+  var pBody = document.getElementById('procTableBody');
+  var pList = procurement.slice().sort(function(a,b){ return (a.dueDate||'9999').localeCompare(b.dueDate||'9999'); });
+  pBody.innerHTML = pList.length ? pList.map(function(p){
+    var d = deptById(p.departmentId);
+    return '<tr data-open-procurement="'+p.id+'">'
+      +'<td class="ev-title">'+esc(p.itemName)+'</td>'
+      +'<td class="mono">'+p.quantity+' '+esc(p.unit||'')+'</td>'
+      +'<td>'+(d?('<span class="dept-chip"><span class="dept-dot" style="background:'+d.color+'"></span>'+esc(d.name)+'</span>'):'—')+'</td>'
+      +'<td>'+esc(p.requestedBy||'—')+'</td>'
+      +'<td><span class="pill" style="color:var(--priority-'+p.priority+');background:var(--priority-'+p.priority+'-bg)">'+esc(REQ_PRIORITY_LABELS[p.priority])+'</span></td>'
+      +'<td class="mono">'+(p.dueDate?fmtDate(p.dueDate):'—')+'</td>'
+      +'<td><span class="pill status-'+(p.status==='received'?'done':p.status==='cancelled'?'overdue':p.status==='ordered'?'in_progress':'new')+'">'+esc(PROC_STATUS_LABELS[p.status])+'</span></td>'
+    +'</tr>';
+  }).join('') : '<tr><td colspan="7"><div class="empty-state">Заявок на закуп нет.</div></td></tr>';
+}
+
+/* ================= MESSAGES TAB ================= */
+function messagesTabHtml(){
+  return ''
+    +'<div class="filter-bar">'
+      +'<div class="field"><label>Подразделение-получатель</label><select id="msgDeptFilter">'+'<option value="">Все</option>'+deptOptions(msgFilters.dept,false)+'</select></div>'
+      +'<div class="field search"><label>Поиск</label><input type="text" id="msgSearch" placeholder="Тема, текст…" value="'+esc(msgFilters.q)+'"></div>'
+      +'<button class="btn btn-primary" data-action="add-message" style="align-self:flex-end;">+ Новое сообщение</button>'
+    +'</div>'
+    +'<div id="messagesList"></div>';
+}
+function messageRecipientDept(m){
+  if(m.toType==='department') return m.toId;
+  var s = staff.find(function(x){ return x.id===m.toId; });
+  return s ? s.departmentId : '';
+}
+function fillMessagesDynamic(){
+  var el = document.getElementById('messagesList');
+  if(!el) return;
+  var q = (msgFilters.q||'').toLowerCase();
+  var list = messages.filter(function(m){
+    if(msgFilters.dept && messageRecipientDept(m)!==msgFilters.dept) return false;
+    if(q){
+      var hay = ((m.subject||'')+' '+(m.body||'')).toLowerCase();
+      if(hay.indexOf(q)===-1) return false;
+    }
+    return true;
+  }).slice().sort(function(a,b){ return (b.createdAt||'').localeCompare(a.createdAt||''); });
+
+  el.innerHTML = list.length ? list.map(function(m){
+    return '<div class="msg-row'+(m.read?'':' unread')+'" data-open-message="'+m.id+'">'
+      +'<span class="msg-dot"></span>'
+      +'<span class="msg-subject">'+esc(m.subject)+'</span>'
+      +'<span class="msg-to">→ '+esc(m.toLabel||'')+'</span>'
+      +'<span class="msg-date mono">'+fmtDateTime(m.createdAt)+'</span>'
+    +'</div>';
+  }).join('') : '<div class="empty-state">Сообщений нет.</div>';
+}
+
+/* ================= MODAL: generic ================= */
+function openModal(innerHtml, onMount, wide){
+  var root = document.getElementById('modalRoot');
+  root.innerHTML = '<div class="modal-overlay" id="modalOverlay"><div class="modal-panel'+(wide?' wide':'')+'">'+innerHtml+'</div></div>';
+  document.body.style.overflow = 'hidden';
+  document.getElementById('modalOverlay').addEventListener('click', function(e){ if(e.target.id==='modalOverlay') closeModal(); });
+  document.addEventListener('keydown', escListener);
+  if(onMount) onMount(root);
+}
+function closeModal(){
+  document.getElementById('modalRoot').innerHTML = '';
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', escListener);
+}
+function escListener(e){ if(e.key==='Escape') closeModal(); }
+function bindDeleteButton(btn, onConfirm){
+  var pending = false, timer = null;
+  var original = btn.textContent;
+  btn.addEventListener('click', function(){
+    if(!pending){
+      pending = true;
+      btn.textContent = 'Точно удалить?';
+      btn.classList.add('btn-danger-confirm');
+      timer = setTimeout(function(){ pending=false; btn.textContent=original; btn.classList.remove('btn-danger-confirm'); }, 3000);
+    } else {
+      clearTimeout(timer);
+      onConfirm();
+    }
+  });
+}
+
+/* ================= MODAL: event ================= */
+function openEventModal(id, prefillDate, presetType){
+  var ev = id ? events.find(function(x){ return x.id===id; }) : null;
+  var isEdit = !!ev;
+  var data = ev || {type:presetType||'task', title:'', departmentId:departments[0]?departments[0].id:'', description:'', startDate:prefillDate||todayIso(), time:'', dueDate:'', priority:'medium', responsible:(currentRole?ROLE_LABELS[currentRole]:''), status:'planned'};
+  var html = ''
+    +'<div class="modal-head"><h3>'+(isEdit?'Событие':'Новое событие')+'</h3><button class="modal-close" data-close>✕</button></div>'
+    +'<div class="modal-form">'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Тип</label><select id="ef-type">'+Object.keys(TYPE_LABELS).map(function(k){ return '<option value="'+k+'"'+(data.type===k?' selected':'')+'>'+TYPE_LABELS[k]+'</option>'; }).join('')+'</select></div>'
+        +'<div class="field"><label>Подразделение</label><select id="ef-dept">'+deptOptions(data.departmentId,false)+'</select></div>'
+      +'</div>'
+      +'<div class="field"><label>Название</label><input type="text" id="ef-title" value="'+esc(data.title)+'" placeholder="Например, «Обновить регистр пациентов»"></div>'
+      +'<div class="field"><label>Краткое описание</label><textarea id="ef-desc" rows="2">'+esc(data.description)+'</textarea></div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Дата начала</label><input type="date" id="ef-start" value="'+esc(data.startDate)+'"></div>'
+        +'<div class="field" id="ef-time-row"><label>Время</label><input type="time" id="ef-time" value="'+esc(data.time||'')+'"></div>'
+      +'</div>'
+      +'<div class="field-row">'
+        +'<div class="field" id="ef-due-row"><label>Срок выполнения</label><input type="date" id="ef-due" value="'+esc(data.dueDate||'')+'"></div>'
+        +'<div class="field"><label>Приоритет</label><select id="ef-priority">'+Object.keys(EV_PRIORITY_LABELS).map(function(k){ return '<option value="'+k+'"'+(data.priority===k?' selected':'')+'>'+EV_PRIORITY_LABELS[k]+'</option>'; }).join('')+'</select></div>'
+      +'</div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Ответственный</label><input type="text" id="ef-resp" value="'+esc(data.responsible)+'" placeholder="ФИО"><select id="ef-resp-pick" class="resp-pick">'+staffPickOptionsHtml(data.departmentId)+'</select></div>'
+        +'<div class="field"><label>Статус</label><select id="ef-status">'+Object.keys(EV_STATUS_LABELS).filter(function(k){return k!=='overdue';}).map(function(k){ return '<option value="'+k+'"'+(data.status===k?' selected':'')+'>'+EV_STATUS_LABELS[k]+'</option>'; }).join('')+'</select></div>'
+      +'</div>'
+      +'<div class="modal-actions">'
+        +(isEdit ? '<button class="btn btn-danger" id="ef-delete">Удалить</button>' : '<span></span>')
+        +'<div class="right"><button class="btn" data-close>Отмена</button><button class="btn btn-primary" id="ef-save">Сохранить</button></div>'
+      +'</div>'
+    +'</div>';
+  openModal(html, function(root){
+    var typeSel = root.querySelector('#ef-type');
+    function syncVisibility(){
+      var t = typeSel.value;
+      root.querySelector('#ef-time-row').style.display = (t==='meeting'||t==='event') ? '' : 'none';
+      root.querySelector('#ef-due-row').style.display = (t==='task'||t==='project') ? '' : 'none';
+    }
+    syncVisibility();
+    typeSel.addEventListener('change', syncVisibility);
+    var deptSel = root.querySelector('#ef-dept');
+    var respInput = root.querySelector('#ef-resp');
+    var respPick = root.querySelector('#ef-resp-pick');
+    deptSel.addEventListener('change', function(){ respPick.innerHTML = staffPickOptionsHtml(deptSel.value); });
+    respPick.addEventListener('change', function(){
+      if(!respPick.value) return;
+      var s = staff.find(function(x){ return x.id===respPick.value; });
+      if(s) respInput.value = s.name;
+      respPick.value = '';
+    });
+    root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    if(isEdit){
+      bindDeleteButton(root.querySelector('#ef-delete'), function(){ deleteDocFn('events', ev.id); closeModal(); });
+    }
+    root.querySelector('#ef-save').addEventListener('click', function(){
+      var title = root.querySelector('#ef-title').value.trim();
+      if(!title){ root.querySelector('#ef-title').focus(); return; }
+      var t = typeSel.value;
+      var payload = {
+        type:t,
+        title:title,
+        departmentId:root.querySelector('#ef-dept').value,
+        description:root.querySelector('#ef-desc').value.trim(),
+        startDate:root.querySelector('#ef-start').value || todayIso(),
+        priority:root.querySelector('#ef-priority').value,
+        responsible:root.querySelector('#ef-resp').value.trim(),
+        status:root.querySelector('#ef-status').value,
+        time:(t==='meeting'||t==='event') ? root.querySelector('#ef-time').value : '',
+        dueDate:(t==='task'||t==='project') ? root.querySelector('#ef-due').value : ''
+      };
+      var op = isEdit ? updateDocFn('events', ev.id, payload) : createDoc('events', payload);
+      op.then(closeModal);
+    });
+  }, false);
+}
+
+/* ================= MODAL: request ================= */
+function openRequestModal(id){
+  var rq = id ? requests.find(function(x){ return x.id===id; }) : null;
+  var isEdit = !!rq;
+  var data = rq || {type:'request', title:'', description:'', departmentId:departments[0]?departments[0].id:'', targetDepartmentId:'', priority:'medium', status:'new', responsible:(currentRole?ROLE_LABELS[currentRole]:''), dueDate:'', comments:[]};
+  var html = ''
+    +'<div class="modal-head"><h3>'+(isEdit?'Заявка':'Новая заявка')+'</h3><button class="modal-close" data-close>✕</button></div>'
+    +'<div class="modal-form">'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Тип обращения</label><select id="rf-type">'+Object.keys(REQ_TYPE_LABELS).map(function(k){ return '<option value="'+k+'"'+(data.type===k?' selected':'')+'>'+REQ_TYPE_LABELS[k]+'</option>'; }).join('')+'</select></div>'
+        +'<div class="field"><label>Приоритет</label><select id="rf-priority">'+Object.keys(REQ_PRIORITY_LABELS).map(function(k){ return '<option value="'+k+'"'+(data.priority===k?' selected':'')+'>'+REQ_PRIORITY_LABELS[k]+'</option>'; }).join('')+'</select></div>'
+      +'</div>'
+      +'<div class="field"><label>Название</label><input type="text" id="rf-title" value="'+esc(data.title)+'" placeholder="Суть обращения одной строкой"></div>'
+      +'<div class="field"><label>Описание</label><textarea id="rf-desc" rows="3">'+esc(data.description)+'</textarea></div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>От подразделения</label><select id="rf-dept">'+deptOptions(data.departmentId,false)+'</select></div>'
+        +'<div class="field"><label>Кому адресована</label><select id="rf-target">'+deptOptions(data.targetDepartmentId,true)+'</select></div>'
+      +'</div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Статус</label><select id="rf-status">'+Object.keys(REQ_STATUS_LABELS).map(function(k){ return '<option value="'+k+'"'+(data.status===k?' selected':'')+'>'+REQ_STATUS_LABELS[k]+'</option>'; }).join('')+'</select></div>'
+        +'<div class="field"><label>Срок решения</label><input type="date" id="rf-due" value="'+esc(data.dueDate||'')+'"></div>'
+      +'</div>'
+      +'<div class="field"><label>Ответственный за решение</label><input type="text" id="rf-resp" value="'+esc(data.responsible)+'" placeholder="ФИО"><select id="rf-resp-pick" class="resp-pick">'+staffPickOptionsHtml(data.targetDepartmentId||data.departmentId)+'</select></div>'
+      +'<div class="modal-actions">'
+        +(isEdit ? '<button class="btn btn-danger" id="rf-delete">Удалить</button>' : '<span></span>')
+        +'<div class="right"><button class="btn" data-close>Отмена</button><button class="btn btn-primary" id="rf-save">Сохранить</button></div>'
+      +'</div>'
+      +(isEdit ? commentsSectionHtml(data.comments||[]) : '')
+    +'</div>';
+  openModal(html, function(root){
+    var rfDeptSel = root.querySelector('#rf-dept');
+    var rfTargetSel = root.querySelector('#rf-target');
+    var rfRespInput = root.querySelector('#rf-resp');
+    var rfRespPick = root.querySelector('#rf-resp-pick');
+    function refreshRfPick(){ rfRespPick.innerHTML = staffPickOptionsHtml(rfTargetSel.value || rfDeptSel.value); }
+    rfDeptSel.addEventListener('change', refreshRfPick);
+    rfTargetSel.addEventListener('change', refreshRfPick);
+    rfRespPick.addEventListener('change', function(){
+      if(!rfRespPick.value) return;
+      var s = staff.find(function(x){ return x.id===rfRespPick.value; });
+      if(s) rfRespInput.value = s.name;
+      rfRespPick.value = '';
+    });
+    root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    if(isEdit){
+      bindDeleteButton(root.querySelector('#rf-delete'), function(){ deleteDocFn('requests', rq.id); closeModal(); });
+      var addBtn = root.querySelector('#rc-add');
+      if(addBtn){
+        addBtn.addEventListener('click', function(){
+          var authorEl = root.querySelector('#rc-author');
+          var textEl = root.querySelector('#rc-text');
+          var author = authorEl.value.trim();
+          var text = textEl.value.trim();
+          if(!author || !text) return;
+          var current = requests.find(function(x){ return x.id===rq.id; });
+          var newComments = (current && current.comments ? current.comments.slice() : []);
+          newComments.push({author:author, text:text, createdAt:new Date().toISOString()});
+          updateDocFn('requests', rq.id, {comments:newComments}).then(function(){
+            textEl.value='';
+            openRequestModal(rq.id);
+          });
+        });
+      }
+    }
+    root.querySelector('#rf-save').addEventListener('click', function(){
+      var title = root.querySelector('#rf-title').value.trim();
+      if(!title){ root.querySelector('#rf-title').focus(); return; }
+      var payload = {
+        type:root.querySelector('#rf-type').value,
+        title:title,
+        description:root.querySelector('#rf-desc').value.trim(),
+        departmentId:root.querySelector('#rf-dept').value,
+        targetDepartmentId:root.querySelector('#rf-target').value,
+        priority:root.querySelector('#rf-priority').value,
+        status:root.querySelector('#rf-status').value,
+        responsible:root.querySelector('#rf-resp').value.trim(),
+        dueDate:root.querySelector('#rf-due').value
+      };
+      if(!isEdit) payload.comments = [];
+      var op = isEdit ? updateDocFn('requests', rq.id, payload) : createDoc('requests', payload);
+      op.then(closeModal);
+    });
+  }, true);
+}
+function commentsSectionHtml(comments){
+  var sorted = comments.slice().sort(function(a,b){ return (a.createdAt||'').localeCompare(b.createdAt||''); });
+  return '<div class="comments">'
+    +'<h4>Лента комментариев</h4>'
+    +(sorted.length ? sorted.map(function(c){
+      return '<div class="comment-item"><div class="c-head"><span class="c-author">'+esc(c.author)+'</span><span class="mono">'+fmtDateTime(c.createdAt)+'</span></div><div class="c-text">'+esc(c.text)+'</div></div>';
+    }).join('') : '<div class="empty-note">Комментариев пока нет.</div>')
+    +'<div class="comment-add">'
+      +'<input type="text" id="rc-author" placeholder="Ваше имя" style="max-width:140px;" value="'+esc(currentRole?ROLE_LABELS[currentRole]:'')+'">'
+      +'<input type="text" id="rc-text" placeholder="Комментарий или статус-апдейт…">'
+      +'<button class="btn btn-primary btn-sm" id="rc-add">Добавить</button>'
+    +'</div>'
+  +'</div>';
+}
+
+function staffPickOptionsHtml(deptId){
+  var list = staffByDept(deptId);
+  if(!list.length) return '<option value="">— нет сотрудников в справочнике —</option>';
+  return '<option value="">— выбрать из справочника —</option>' + list.map(function(s){ return '<option value="'+s.id+'">'+esc(s.name)+' — '+esc(s.position||'')+'</option>'; }).join('');
+}
+function staffSectionHtml(deptId){
+  var list = staffByDept(deptId).slice().sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+  return '<div class="comments">'
+    +'<h4>Сотрудники подразделения</h4>'
+    +'<div class="staff-list">'
+      +(list.length ? list.map(function(s){
+        return '<div class="staff-row"><span class="s-name">'+esc(s.name)+'</span><span class="s-pos">'+esc(s.position||'')+'</span><button type="button" class="s-remove" data-remove-staff="'+s.id+'" title="Удалить">✕</button></div>';
+      }).join('') : '<div class="empty-note">Сотрудники не добавлены.</div>')
+    +'</div>'
+    +'<div class="staff-add-row">'
+      +'<input type="text" id="ds-name" placeholder="ФИО">'
+      +'<input type="text" id="ds-pos" placeholder="Должность">'
+      +'<button type="button" class="btn btn-sm" id="ds-add">Добавить</button>'
+    +'</div>'
+  +'</div>';
+}
+
+/* ================= MODAL: department ================= */
+function openDepartmentModal(id){
+  var dep = id ? departments.find(function(x){ return x.id===id; }) : null;
+  var isEdit = !!dep;
+  var data = dep || {name:'', head:'', color:DEPT_COLORS[departments.length % DEPT_COLORS.length], note:''};
+  var html = ''
+    +'<div class="modal-head"><h3>'+(isEdit?'Подразделение':'Новое подразделение')+'</h3><button class="modal-close" data-close>✕</button></div>'
+    +'<div class="modal-form">'
+      +'<div class="field"><label>Название</label><input type="text" id="df-name" value="'+esc(data.name)+'" placeholder="Например, «Поликлиника»"></div>'
+      +'<div class="field"><label>Руководитель / ответственный</label><input type="text" id="df-head" value="'+esc(data.head)+'" placeholder="ФИО"></div>'
+      +'<div class="field"><label>Цвет</label><div class="swatches" id="df-swatches">'+DEPT_COLORS.map(function(c){ return '<button type="button" class="swatch'+(c===data.color?' selected':'')+'" style="background:'+c+'" data-color="'+c+'"></button>'; }).join('')+'</div></div>'
+      +'<div class="field"><label>Заметка</label><textarea id="df-note" rows="2">'+esc(data.note)+'</textarea></div>'
+      +'<div class="modal-actions">'
+        +(isEdit ? '<button class="btn btn-danger" id="df-delete">Удалить</button>' : '<span></span>')
+        +'<div class="right"><button class="btn" data-close>Отмена</button><button class="btn btn-primary" id="df-save">Сохранить</button></div>'
+      +'</div>'
+      +(isEdit ? staffSectionHtml(dep.id) : '')
+    +'</div>';
+  openModal(html, function(root){
+    var selectedColor = data.color;
+    root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    root.querySelector('#df-swatches').addEventListener('click', function(e){
+      var sw = e.target.closest('.swatch');
+      if(!sw) return;
+      selectedColor = sw.getAttribute('data-color');
+      root.querySelectorAll('.swatch').forEach(function(s){ s.classList.toggle('selected', s===sw); });
+    });
+    if(isEdit){
+      bindDeleteButton(root.querySelector('#df-delete'), function(){ deleteDocFn('departments', dep.id); closeModal(); });
+      var addStaffBtn = root.querySelector('#ds-add');
+      if(addStaffBtn){
+        addStaffBtn.addEventListener('click', function(){
+          var nameEl = root.querySelector('#ds-name');
+          var posEl = root.querySelector('#ds-pos');
+          var name = nameEl.value.trim();
+          var pos = posEl.value.trim();
+          if(!name) { nameEl.focus(); return; }
+          createDoc('staff', {name:name, position:pos, departmentId:dep.id}).then(function(){
+            openDepartmentModal(dep.id);
+          });
+        });
+      }
+      root.querySelectorAll('[data-remove-staff]').forEach(function(b){
+        b.addEventListener('click', function(){
+          deleteDocFn('staff', b.getAttribute('data-remove-staff')).then(function(){
+            openDepartmentModal(dep.id);
+          });
+        });
+      });
+    }
+    root.querySelector('#df-save').addEventListener('click', function(){
+      var name = root.querySelector('#df-name').value.trim();
+      if(!name){ root.querySelector('#df-name').focus(); return; }
+      var payload = {
+        name:name,
+        head:root.querySelector('#df-head').value.trim(),
+        color:selectedColor,
+        note:root.querySelector('#df-note').value.trim()
+      };
+      var op = isEdit ? updateDocFn('departments', dep.id, payload) : createDoc('departments', payload);
+      op.then(closeModal);
+    });
+  }, false);
+}
+
+/* ================= MODAL: reagent ================= */
+function openReagentModal(id){
+  var r = id ? reagents.find(function(x){ return x.id===id; }) : null;
+  var isEdit = !!r;
+  var data = r || {name:'', unit:'', quantity:0, threshold:0, note:''};
+  var html = ''
+    +'<div class="modal-head"><h3>'+(isEdit?'Реагент':'Новый реагент')+'</h3><button class="modal-close" data-close>✕</button></div>'
+    +'<div class="modal-form">'
+      +'<div class="field"><label>Название</label><input type="text" id="rg-name" value="'+esc(data.name)+'" placeholder="Например, «Реагенты для проточной цитометрии»"></div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Единица измерения</label><input type="text" id="rg-unit" value="'+esc(data.unit)+'" placeholder="'+UNITS_HINT+'"></div>'
+        +'<div class="field"><label>Остаток</label><input type="text" inputmode="numeric" id="rg-qty" value="'+esc(data.quantity)+'"></div>'
+      +'</div>'
+      +'<div class="field"><label>Критический порог</label><input type="text" inputmode="numeric" id="rg-threshold" value="'+esc(data.threshold)+'"></div>'
+      +'<div class="field"><label>Заметка</label><textarea id="rg-note" rows="2">'+esc(data.note)+'</textarea></div>'
+      +'<div class="modal-actions">'
+        +(isEdit ? '<button class="btn btn-danger" id="rg-delete">Удалить</button>' : '<span></span>')
+        +'<div class="right"><button class="btn" data-close>Отмена</button><button class="btn btn-primary" id="rg-save">Сохранить</button></div>'
+      +'</div>'
+    +'</div>';
+  openModal(html, function(root){
+    root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    if(isEdit) bindDeleteButton(root.querySelector('#rg-delete'), function(){ deleteDocFn('reagents', r.id); closeModal(); });
+    root.querySelector('#rg-save').addEventListener('click', function(){
+      var name = root.querySelector('#rg-name').value.trim();
+      if(!name){ root.querySelector('#rg-name').focus(); return; }
+      var payload = {
+        name:name,
+        unit:root.querySelector('#rg-unit').value.trim(),
+        quantity:parseFloat(root.querySelector('#rg-qty').value)||0,
+        threshold:parseFloat(root.querySelector('#rg-threshold').value)||0,
+        note:root.querySelector('#rg-note').value.trim()
+      };
+      var op = isEdit ? updateDocFn('reagents', r.id, payload) : createDoc('reagents', payload);
+      op.then(closeModal);
+    });
+  }, false);
+}
+
+/* ================= MODAL: lab incident ================= */
+function openIncidentModal(id){
+  var inc = id ? labIncidents.find(function(x){ return x.id===id; }) : null;
+  var isEdit = !!inc;
+  var data = inc || {title:'', description:'', severity:'medium', status:'new', reportedBy:(currentRole?ROLE_LABELS[currentRole]:''), date:todayIso(), resolutionNote:''};
+  var html = ''
+    +'<div class="modal-head"><h3>'+(isEdit?'Инцидент':'Новый инцидент')+'</h3><button class="modal-close" data-close>✕</button></div>'
+    +'<div class="modal-form">'
+      +'<div class="field"><label>Название</label><input type="text" id="ic-title" value="'+esc(data.title)+'" placeholder="Суть инцидента одной строкой"></div>'
+      +'<div class="field"><label>Описание</label><textarea id="ic-desc" rows="3">'+esc(data.description)+'</textarea></div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Серьёзность</label><select id="ic-severity">'+Object.keys(SEVERITY_LABELS).map(function(k){ return '<option value="'+k+'"'+(data.severity===k?' selected':'')+'>'+SEVERITY_LABELS[k]+'</option>'; }).join('')+'</select></div>'
+        +'<div class="field"><label>Статус</label><select id="ic-status">'+INCIDENT_STATUS_COLS.map(function(k){ return '<option value="'+k+'"'+(data.status===k?' selected':'')+'>'+INCIDENT_STATUS_LABELS[k]+'</option>'; }).join('')+'</select></div>'
+      +'</div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Дата</label><input type="date" id="ic-date" value="'+esc(data.date)+'"></div>'
+        +'<div class="field"><label>Сообщил</label><input type="text" id="ic-reported" value="'+esc(data.reportedBy)+'"></div>'
+      +'</div>'
+      +'<div class="field"><label>Как решено (необязательно)</label><textarea id="ic-resolution" rows="2">'+esc(data.resolutionNote)+'</textarea></div>'
+      +'<div class="modal-actions">'
+        +(isEdit ? '<button class="btn btn-danger" id="ic-delete">Удалить</button>' : '<span></span>')
+        +'<div class="right"><button class="btn" data-close>Отмена</button><button class="btn btn-primary" id="ic-save">Сохранить</button></div>'
+      +'</div>'
+    +'</div>';
+  openModal(html, function(root){
+    root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    if(isEdit) bindDeleteButton(root.querySelector('#ic-delete'), function(){ deleteDocFn('labIncidents', inc.id); closeModal(); });
+    root.querySelector('#ic-save').addEventListener('click', function(){
+      var title = root.querySelector('#ic-title').value.trim();
+      if(!title){ root.querySelector('#ic-title').focus(); return; }
+      var payload = {
+        title:title,
+        description:root.querySelector('#ic-desc').value.trim(),
+        severity:root.querySelector('#ic-severity').value,
+        status:root.querySelector('#ic-status').value,
+        date:root.querySelector('#ic-date').value || todayIso(),
+        reportedBy:root.querySelector('#ic-reported').value.trim(),
+        resolutionNote:root.querySelector('#ic-resolution').value.trim()
+      };
+      var op = isEdit ? updateDocFn('labIncidents', inc.id, payload) : createDoc('labIncidents', payload);
+      op.then(closeModal);
+    });
+  }, false);
+}
+
+/* ================= MODAL: stock item ================= */
+function openStockModal(id){
+  var s = id ? stock.find(function(x){ return x.id===id; }) : null;
+  var isEdit = !!s;
+  var data = s || {name:'', unit:'', quantity:0, threshold:0, note:''};
+  var html = ''
+    +'<div class="modal-head"><h3>'+(isEdit?'Позиция склада':'Новая позиция склада')+'</h3><button class="modal-close" data-close>✕</button></div>'
+    +'<div class="modal-form">'
+      +'<div class="field"><label>Название</label><input type="text" id="sk-name" value="'+esc(data.name)+'" placeholder="Например, «Ритуксимаб 500 мг, флак.»"></div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Единица измерения</label><input type="text" id="sk-unit" value="'+esc(data.unit)+'" placeholder="'+UNITS_HINT+'"></div>'
+        +'<div class="field"><label>Остаток</label><input type="text" inputmode="numeric" id="sk-qty" value="'+esc(data.quantity)+'"></div>'
+      +'</div>'
+      +'<div class="field"><label>Критический порог</label><input type="text" inputmode="numeric" id="sk-threshold" value="'+esc(data.threshold)+'"></div>'
+      +'<div class="field"><label>Заметка</label><textarea id="sk-note" rows="2">'+esc(data.note)+'</textarea></div>'
+      +'<div class="modal-actions">'
+        +(isEdit ? '<button class="btn btn-danger" id="sk-delete">Удалить</button>' : '<span></span>')
+        +'<div class="right"><button class="btn" data-close>Отмена</button><button class="btn btn-primary" id="sk-save">Сохранить</button></div>'
+      +'</div>'
+    +'</div>';
+  openModal(html, function(root){
+    root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    if(isEdit) bindDeleteButton(root.querySelector('#sk-delete'), function(){ deleteDocFn('stock', s.id); closeModal(); });
+    root.querySelector('#sk-save').addEventListener('click', function(){
+      var name = root.querySelector('#sk-name').value.trim();
+      if(!name){ root.querySelector('#sk-name').focus(); return; }
+      var payload = {
+        name:name,
+        unit:root.querySelector('#sk-unit').value.trim(),
+        quantity:parseFloat(root.querySelector('#sk-qty').value)||0,
+        threshold:parseFloat(root.querySelector('#sk-threshold').value)||0,
+        note:root.querySelector('#sk-note').value.trim()
+      };
+      var op = isEdit ? updateDocFn('stock', s.id, payload) : createDoc('stock', payload);
+      op.then(closeModal);
+    });
+  }, false);
+}
+
+/* ================= MODAL: procurement request ================= */
+function openProcurementModal(id){
+  var p = id ? procurement.find(function(x){ return x.id===id; }) : null;
+  var isEdit = !!p;
+  var data = p || {itemName:'', quantity:1, unit:'', priority:'medium', status:'new', requestedBy:(currentRole?ROLE_LABELS[currentRole]:''), departmentId:departments[0]?departments[0].id:'', dueDate:'', note:''};
+  var html = ''
+    +'<div class="modal-head"><h3>'+(isEdit?'Заявка на закуп':'Новая заявка на закуп')+'</h3><button class="modal-close" data-close>✕</button></div>'
+    +'<div class="modal-form">'
+      +'<div class="field"><label>Позиция</label><input type="text" id="pc-item" value="'+esc(data.itemName)+'" placeholder="Например, «Ритуксимаб 500 мг»"></div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Количество</label><input type="text" inputmode="numeric" id="pc-qty" value="'+esc(data.quantity)+'"></div>'
+        +'<div class="field"><label>Единица измерения</label><input type="text" id="pc-unit" value="'+esc(data.unit)+'" placeholder="'+UNITS_HINT+'"></div>'
+      +'</div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Подразделение-заявитель</label><select id="pc-dept">'+deptOptions(data.departmentId,false)+'</select></div>'
+        +'<div class="field"><label>Приоритет</label><select id="pc-priority">'+Object.keys(REQ_PRIORITY_LABELS).map(function(k){ return '<option value="'+k+'"'+(data.priority===k?' selected':'')+'>'+REQ_PRIORITY_LABELS[k]+'</option>'; }).join('')+'</select></div>'
+      +'</div>'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Статус</label><select id="pc-status">'+Object.keys(PROC_STATUS_LABELS).map(function(k){ return '<option value="'+k+'"'+(data.status===k?' selected':'')+'>'+PROC_STATUS_LABELS[k]+'</option>'; }).join('')+'</select></div>'
+        +'<div class="field"><label>Нужно к дате</label><input type="date" id="pc-due" value="'+esc(data.dueDate||'')+'"></div>'
+      +'</div>'
+      +'<div class="field"><label>Заявитель</label><input type="text" id="pc-resp" value="'+esc(data.requestedBy)+'"></div>'
+      +'<div class="field"><label>Заметка</label><textarea id="pc-note" rows="2">'+esc(data.note)+'</textarea></div>'
+      +'<div class="modal-actions">'
+        +(isEdit ? '<button class="btn btn-danger" id="pc-delete">Удалить</button>' : '<span></span>')
+        +'<div class="right"><button class="btn" data-close>Отмена</button><button class="btn btn-primary" id="pc-save">Сохранить</button></div>'
+      +'</div>'
+    +'</div>';
+  openModal(html, function(root){
+    root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    if(isEdit) bindDeleteButton(root.querySelector('#pc-delete'), function(){ deleteDocFn('procurement', p.id); closeModal(); });
+    root.querySelector('#pc-save').addEventListener('click', function(){
+      var item = root.querySelector('#pc-item').value.trim();
+      if(!item){ root.querySelector('#pc-item').focus(); return; }
+      var payload = {
+        itemName:item,
+        quantity:parseFloat(root.querySelector('#pc-qty').value)||0,
+        unit:root.querySelector('#pc-unit').value.trim(),
+        departmentId:root.querySelector('#pc-dept').value,
+        priority:root.querySelector('#pc-priority').value,
+        status:root.querySelector('#pc-status').value,
+        dueDate:root.querySelector('#pc-due').value,
+        requestedBy:root.querySelector('#pc-resp').value.trim(),
+        note:root.querySelector('#pc-note').value.trim()
+      };
+      var op = isEdit ? updateDocFn('procurement', p.id, payload) : createDoc('procurement', payload);
+      op.then(closeModal);
+    });
+  }, false);
+}
+
+/* ================= MODAL: message ================= */
+function openMessageModal(id){
+  var m = id ? messages.find(function(x){ return x.id===id; }) : null;
+  if(m && !m.read){ updateDocFn('messages', m.id, {read:true}); }
+  if(m){
+    var d = deptById(messageRecipientDept(m));
+    var html = ''
+      +'<div class="modal-head"><h3>'+esc(m.subject)+'</h3><button class="modal-close" data-close>✕</button></div>'
+      +'<div class="msg-detail-meta">'
+        +'<span>От: '+esc(ROLE_LABELS[m.fromRole]||'Не указано')+'</span>'
+        +'<span>Кому: '+esc(m.toLabel||'')+(d?(' <span class="dept-dot" style="background:'+d.color+';display:inline-block;"></span>'):'')+'</span>'
+        +'<span class="mono">'+fmtDateTime(m.createdAt)+'</span>'
+      +'</div>'
+      +'<div class="msg-detail-body">'+esc(m.body)+'</div>'
+      +'<div class="modal-actions" style="margin-top:16px;"><span></span><div class="right"><button class="btn" data-close>Закрыть</button></div></div>';
+    openModal(html, function(root){
+      root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    }, false);
+    return;
+  }
+  var staffOptions = staff.map(function(s){ var d=deptById(s.departmentId); return '<option value="'+s.id+'">'+esc(s.name)+' — '+esc(s.position)+(d?(' ('+esc(d.name)+')'):'')+'</option>'; }).join('');
+  var html2 = ''
+    +'<div class="modal-head"><h3>Новое сообщение</h3><button class="modal-close" data-close>✕</button></div>'
+    +'<div class="modal-form">'
+      +'<div class="field-row">'
+        +'<div class="field"><label>Кому</label><select id="mg-toType"><option value="department">Подразделению</option><option value="staff">Сотруднику</option></select></div>'
+        +'<div class="field" id="mg-toDeptRow"><label>Подразделение</label><select id="mg-toDept">'+deptOptions('',false)+'</select></div>'
+        +'<div class="field" id="mg-toStaffRow" style="display:none;"><label>Сотрудник</label><select id="mg-toStaff">'+staffOptions+'</select></div>'
+      +'</div>'
+      +'<div class="field"><label>Тема</label><input type="text" id="mg-subject" placeholder="Кратко о чём сообщение"></div>'
+      +'<div class="field"><label>Текст сообщения</label><textarea id="mg-body" rows="4"></textarea></div>'
+      +'<div class="modal-actions"><span></span><div class="right"><button class="btn" data-close>Отмена</button><button class="btn btn-primary" id="mg-send">Отправить</button></div></div>'
+    +'</div>';
+  openModal(html2, function(root){
+    root.querySelectorAll('[data-close]').forEach(function(b){ b.addEventListener('click', closeModal); });
+    var toTypeSel = root.querySelector('#mg-toType');
+    toTypeSel.addEventListener('change', function(){
+      var isStaff = toTypeSel.value==='staff';
+      root.querySelector('#mg-toDeptRow').style.display = isStaff ? 'none' : '';
+      root.querySelector('#mg-toStaffRow').style.display = isStaff ? '' : 'none';
+    });
+    root.querySelector('#mg-send').addEventListener('click', function(){
+      var subject = root.querySelector('#mg-subject').value.trim();
+      var body = root.querySelector('#mg-body').value.trim();
+      if(!subject || !body){ root.querySelector(subject?'#mg-body':'#mg-subject').focus(); return; }
+      var isStaff = toTypeSel.value==='staff';
+      var toId, toLabel;
+      if(isStaff){
+        var sId = root.querySelector('#mg-toStaff').value;
+        var sObj = staff.find(function(x){ return x.id===sId; });
+        toId = sId; toLabel = sObj ? sObj.name : '';
+      } else {
+        var dId = root.querySelector('#mg-toDept').value;
+        var dObj = deptById(dId);
+        toId = dId; toLabel = dObj ? dObj.name : '';
+      }
+      if(!toId || !toLabel) return;
+      var payload = {
+        toType:isStaff?'staff':'department',
+        toId:toId,
+        toLabel:toLabel,
+        fromRole:currentRole||'',
+        subject:subject,
+        body:body,
+        relatedType:'',
+        relatedId:'',
+        createdAt:new Date().toISOString(),
+        read:false
+      };
+      createDoc('messages', payload).then(closeModal);
+    });
+  }, false);
+}
+
+/* ================= go ================= */
+if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', init); } else { init(); }
+})();
+</script>
