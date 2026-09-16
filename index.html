@@ -1,3 +1,16 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Единая панель деятельности подразделений центра гематологии: календарь, задачи, заявки, склад и сообщения.">
+<meta name="theme-color" content="#7A1B3B">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Гематология">
 <title>Центр гематологии</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
 <style>
@@ -374,6 +387,8 @@ tbody tr:last-child td{border-bottom:none;}
 .msg-detail-body{background:var(--surface-muted);border-radius:10px;padding:12px;font-size:13.5px;white-space:pre-wrap;}
 </style>
 
+</head>
+<body>
 <div id="app">
   <div id="demoBannerSlot"></div>
   <div class="topbar">
@@ -2028,3 +2043,15 @@ function openMessageModal(id){
 if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', init); } else { init(); }
 })();
 </script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function (err) {
+      console.error('Service worker registration failed', err);
+    });
+  });
+}
+</script>
+</body>
+</html>
+

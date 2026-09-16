@@ -1,0 +1,16 @@
+{
+  "name": "Центр гематологии — дашборд",
+  "short_name": "Гематология",
+  "description": "Единая панель деятельности подразделений центра гематологии: календарь, задачи, заявки, склад и сообщения.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F5F2F4",
+  "theme_color": "#7A1B3B",
+  "lang": "ru",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
