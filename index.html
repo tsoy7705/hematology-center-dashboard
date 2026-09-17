@@ -297,6 +297,40 @@ tbody tr:last-child td{border-bottom:none;}
 .ev-title{font-weight:700;}
 .ev-desc{color:var(--text-secondary);font-size:12.5px;margin-top:2px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
+/* ---------- responsive table -> card list ---------- */
+@media (max-width:680px){
+  .table-wrap.rcards{overflow:visible;border:none;background:none;box-shadow:none;}
+  .table-wrap.rcards table{width:100%;min-width:0;}
+  .table-wrap.rcards thead{display:none;}
+  .table-wrap.rcards tbody{display:flex;flex-direction:column;gap:10px;}
+  .table-wrap.rcards tr{
+    display:flex;flex-direction:column;position:relative;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius-md);padding:13px 14px;box-shadow:var(--shadow-sm);
+  }
+  .table-wrap.rcards tr:hover td{background:transparent;}
+  .table-wrap.rcards td{
+    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    padding:6px 0;border-bottom:1px dashed var(--border);font-size:13.5px;order:1;text-align:right;
+  }
+  .table-wrap.rcards td:last-child{border-bottom:none;}
+  .table-wrap.rcards td::before{
+    content:attr(data-label);font-size:11px;font-weight:700;color:var(--text-secondary);
+    text-transform:uppercase;letter-spacing:.03em;flex:none;padding-top:1px;
+  }
+  .table-wrap.rcards td.tc-primary{
+    display:block;padding:0 34px 10px 0;border-bottom:1px solid var(--border);margin-bottom:6px;order:-1;
+  }
+  .table-wrap.rcards td.tc-primary::before{content:none;}
+  .table-wrap.rcards td.tc-primary .ev-title{font-size:14.5px;}
+  .table-wrap.rcards td.tc-primary .ev-desc{white-space:normal;max-width:none;}
+  .table-wrap.rcards td.tc-status{
+    display:block;position:absolute;top:13px;right:14px;padding:0;border-bottom:none;
+  }
+  .table-wrap.rcards td.tc-status::before{content:none;}
+  .table-wrap.rcards td.tc-empty{display:block;padding:8px 0;}
+  .table-wrap.rcards td.tc-empty::before{content:none;}
+}
+
 /* ---------- requests board ---------- */
 .board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;}
 .board.board-3{grid-template-columns:repeat(3,minmax(0,1fr));}
@@ -1232,7 +1266,7 @@ function eventsTabHtml(){
       +'<div class="field search"><label>Поиск</label><input type="text" id="evSearch" placeholder="Название, ответственный, описание…" value="'+esc(evFilters.q)+'"></div>'
       +'<button class="btn btn-primary" data-action="add-event" style="align-self:flex-end;">+ Добавить событие</button>'
     +'</div>'
-    +'<div class="table-wrap"><table>'
+    +'<div class="table-wrap rcards"><table>'
       +'<thead><tr><th>Тип</th><th>Название</th><th>Подразделение</th><th>Ответственный</th><th>Даты</th><th>Статус</th></tr></thead>'
       +'<tbody id="eventsTableBody"></tbody>'
     +'</table></div>';
@@ -1255,7 +1289,7 @@ function fillEventsList(){
     return true;
   }).slice().sort(function(a,b){ return (effectiveDate(a)||'9999').localeCompare(effectiveDate(b)||'9999'); });
 
-  if(!list.length){ body.innerHTML = '<tr><td colspan="6"><div class="empty-state">Ничего не найдено по заданным фильтрам.</div></td></tr>'; return; }
+  if(!list.length){ body.innerHTML = '<tr><td class="tc-empty" colspan="6"><div class="empty-state">Ничего не найдено по заданным фильтрам.</div></td></tr>'; return; }
   body.innerHTML = list.map(function(e){
     var d = deptById(e.departmentId);
     var st = computedStatus(e);
@@ -1263,12 +1297,12 @@ function fillEventsList(){
       ? fmtDate(e.startDate)+(e.dueDate?(' → '+fmtDate(e.dueDate)):'')
       : fmtDate(e.startDate)+(e.time?(' '+e.time):'');
     return '<tr data-open-event="'+e.id+'">'
-      +'<td>'+TYPE_LABELS[e.type]+'</td>'
-      +'<td><div class="ev-title">'+esc(e.title)+'</div>'+(e.description?'<div class="ev-desc">'+esc(e.description)+'</div>':'')+'</td>'
-      +'<td>'+(d?('<span class="dept-chip"><span class="dept-dot" style="background:'+d.color+'"></span>'+esc(d.name)+'</span>'):'—')+'</td>'
-      +'<td>'+esc(e.responsible||'—')+'</td>'
-      +'<td class="mono">'+dateStr+'</td>'
-      +'<td>'+statusPill(st, EV_STATUS_LABELS)+'</td>'
+      +'<td data-label="Тип">'+TYPE_LABELS[e.type]+'</td>'
+      +'<td class="tc-primary"><div class="ev-title">'+esc(e.title)+'</div>'+(e.description?'<div class="ev-desc">'+esc(e.description)+'</div>':'')+'</td>'
+      +'<td data-label="Подразделение">'+(d?('<span class="dept-chip"><span class="dept-dot" style="background:'+d.color+'"></span>'+esc(d.name)+'</span>'):'—')+'</td>'
+      +'<td data-label="Ответственный">'+esc(e.responsible||'—')+'</td>'
+      +'<td class="mono" data-label="Даты">'+dateStr+'</td>'
+      +'<td class="tc-status">'+statusPill(st, EV_STATUS_LABELS)+'</td>'
     +'</tr>';
   }).join('');
 }
@@ -1368,7 +1402,7 @@ function reagentStatus(r){
 function reagentsTabHtml(){
   return ''
     +'<div class="section-heading"><h2>Реагенты (склад лаборатории)</h2><button class="btn btn-primary" data-action="add-reagent">+ Добавить реагент</button></div>'
-    +'<div class="table-wrap" style="margin-bottom:26px;"><table>'
+    +'<div class="table-wrap rcards" style="margin-bottom:26px;"><table>'
       +'<thead><tr><th>Название</th><th>Остаток</th><th>Критический порог</th><th>Статус</th><th>Заметка</th></tr></thead>'
       +'<tbody id="reagentsTableBody"></tbody>'
     +'</table></div>'
@@ -1386,13 +1420,13 @@ function fillReagentsDynamic(){
   body.innerHTML = list.length ? list.map(function(r){
     var st = reagentStatus(r);
     return '<tr data-open-reagent="'+r.id+'">'
-      +'<td class="ev-title">'+esc(r.name)+'</td>'
-      +'<td class="mono">'+r.quantity+' '+esc(r.unit||'')+'</td>'
-      +'<td class="mono">'+r.threshold+' '+esc(r.unit||'')+'</td>'
-      +'<td><span class="pill status-'+st.code+'">'+st.label+'</span></td>'
-      +'<td>'+esc(r.note||'—')+'</td>'
+      +'<td class="tc-primary ev-title">'+esc(r.name)+'</td>'
+      +'<td class="mono" data-label="Остаток">'+r.quantity+' '+esc(r.unit||'')+'</td>'
+      +'<td class="mono" data-label="Порог">'+r.threshold+' '+esc(r.unit||'')+'</td>'
+      +'<td class="tc-status"><span class="pill status-'+st.code+'">'+st.label+'</span></td>'
+      +'<td data-label="Заметка">'+esc(r.note||'—')+'</td>'
     +'</tr>';
-  }).join('') : '<tr><td colspan="5"><div class="empty-state">Реагенты не добавлены.</div></td></tr>';
+  }).join('') : '<tr><td class="tc-empty" colspan="5"><div class="empty-state">Реагенты не добавлены.</div></td></tr>';
 
   INCIDENT_STATUS_COLS.forEach(function(s){
     var items = labIncidents.filter(function(i){ return i.status===s; }).sort(function(a,b){
@@ -1419,12 +1453,12 @@ function fillReagentsDynamic(){
 function pharmacyTabHtml(){
   return ''
     +'<div class="section-heading"><h2>Остатки на складе</h2><button class="btn btn-primary" data-action="add-stock">+ Добавить позицию</button></div>'
-    +'<div class="table-wrap" style="margin-bottom:26px;"><table>'
+    +'<div class="table-wrap rcards" style="margin-bottom:26px;"><table>'
       +'<thead><tr><th>Название</th><th>Остаток</th><th>Критический порог</th><th>Статус</th><th>Заметка</th></tr></thead>'
       +'<tbody id="stockTableBody"></tbody>'
     +'</table></div>'
     +'<div class="section-heading"><h2>Заявки на закуп</h2><button class="btn btn-primary" data-action="add-procurement">+ Новая заявка на закуп</button></div>'
-    +'<div class="table-wrap"><table>'
+    +'<div class="table-wrap rcards"><table>'
       +'<thead><tr><th>Позиция</th><th>Кол-во</th><th>Подразделение</th><th>Заявитель</th><th>Приоритет</th><th>Срок</th><th>Статус</th></tr></thead>'
       +'<tbody id="procTableBody"></tbody>'
     +'</table></div>';
@@ -1436,28 +1470,28 @@ function fillPharmacyDynamic(){
   sBody.innerHTML = sList.length ? sList.map(function(s){
     var st = reagentStatus(s);
     return '<tr data-open-stock="'+s.id+'">'
-      +'<td class="ev-title">'+esc(s.name)+'</td>'
-      +'<td class="mono">'+s.quantity+' '+esc(s.unit||'')+'</td>'
-      +'<td class="mono">'+s.threshold+' '+esc(s.unit||'')+'</td>'
-      +'<td><span class="pill status-'+st.code+'">'+st.label+'</span></td>'
-      +'<td>'+esc(s.note||'—')+'</td>'
+      +'<td class="tc-primary ev-title">'+esc(s.name)+'</td>'
+      +'<td class="mono" data-label="Остаток">'+s.quantity+' '+esc(s.unit||'')+'</td>'
+      +'<td class="mono" data-label="Порог">'+s.threshold+' '+esc(s.unit||'')+'</td>'
+      +'<td class="tc-status"><span class="pill status-'+st.code+'">'+st.label+'</span></td>'
+      +'<td data-label="Заметка">'+esc(s.note||'—')+'</td>'
     +'</tr>';
-  }).join('') : '<tr><td colspan="5"><div class="empty-state">Склад пуст.</div></td></tr>';
+  }).join('') : '<tr><td class="tc-empty" colspan="5"><div class="empty-state">Склад пуст.</div></td></tr>';
 
   var pBody = document.getElementById('procTableBody');
   var pList = procurement.slice().sort(function(a,b){ return (a.dueDate||'9999').localeCompare(b.dueDate||'9999'); });
   pBody.innerHTML = pList.length ? pList.map(function(p){
     var d = deptById(p.departmentId);
     return '<tr data-open-procurement="'+p.id+'">'
-      +'<td class="ev-title">'+esc(p.itemName)+'</td>'
-      +'<td class="mono">'+p.quantity+' '+esc(p.unit||'')+'</td>'
-      +'<td>'+(d?('<span class="dept-chip"><span class="dept-dot" style="background:'+d.color+'"></span>'+esc(d.name)+'</span>'):'—')+'</td>'
-      +'<td>'+esc(p.requestedBy||'—')+'</td>'
-      +'<td><span class="pill" style="color:var(--priority-'+p.priority+');background:var(--priority-'+p.priority+'-bg)">'+esc(REQ_PRIORITY_LABELS[p.priority])+'</span></td>'
-      +'<td class="mono">'+(p.dueDate?fmtDate(p.dueDate):'—')+'</td>'
-      +'<td><span class="pill status-'+(p.status==='received'?'done':p.status==='cancelled'?'overdue':p.status==='ordered'?'in_progress':'new')+'">'+esc(PROC_STATUS_LABELS[p.status])+'</span></td>'
+      +'<td class="tc-primary ev-title">'+esc(p.itemName)+'</td>'
+      +'<td class="mono" data-label="Кол-во">'+p.quantity+' '+esc(p.unit||'')+'</td>'
+      +'<td data-label="Подразделение">'+(d?('<span class="dept-chip"><span class="dept-dot" style="background:'+d.color+'"></span>'+esc(d.name)+'</span>'):'—')+'</td>'
+      +'<td data-label="Заявитель">'+esc(p.requestedBy||'—')+'</td>'
+      +'<td data-label="Приоритет"><span class="pill" style="color:var(--priority-'+p.priority+');background:var(--priority-'+p.priority+'-bg)">'+esc(REQ_PRIORITY_LABELS[p.priority])+'</span></td>'
+      +'<td class="mono" data-label="Срок">'+(p.dueDate?fmtDate(p.dueDate):'—')+'</td>'
+      +'<td class="tc-status"><span class="pill status-'+(p.status==='received'?'done':p.status==='cancelled'?'overdue':p.status==='ordered'?'in_progress':'new')+'">'+esc(PROC_STATUS_LABELS[p.status])+'</span></td>'
     +'</tr>';
-  }).join('') : '<tr><td colspan="7"><div class="empty-state">Заявок на закуп нет.</div></td></tr>';
+  }).join('') : '<tr><td class="tc-empty" colspan="7"><div class="empty-state">Заявок на закуп нет.</div></td></tr>';
 }
 
 /* ================= MESSAGES TAB ================= */
