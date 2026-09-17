@@ -304,12 +304,12 @@ tbody tr:last-child td{border-bottom:none;}
   .table-wrap.rcards thead{display:none;}
   .table-wrap.rcards tbody{display:flex;flex-direction:column;gap:10px;}
   .table-wrap.rcards tr{
-    display:flex;flex-direction:column;position:relative;background:var(--surface);border:1px solid var(--border);
-    border-radius:var(--radius-md);padding:13px 14px;box-shadow:var(--shadow-sm);
+    display:flex;flex-wrap:wrap;align-items:flex-start;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius-md);padding:13px 14px;box-shadow:var(--shadow-sm);row-gap:0;
   }
   .table-wrap.rcards tr:hover td{background:transparent;}
   .table-wrap.rcards td{
-    display:flex;justify-content:space-between;align-items:center;gap:12px;
+    display:flex;flex:1 1 100%;justify-content:space-between;align-items:center;gap:12px;
     padding:6px 0;border-bottom:1px dashed var(--border);font-size:13.5px;order:1;text-align:right;
   }
   .table-wrap.rcards td:last-child{border-bottom:none;}
@@ -318,16 +318,17 @@ tbody tr:last-child td{border-bottom:none;}
     text-transform:uppercase;letter-spacing:.03em;flex:none;padding-top:1px;
   }
   .table-wrap.rcards td.tc-primary{
-    display:block;padding:0 34px 10px 0;border-bottom:1px solid var(--border);margin-bottom:6px;order:-1;
+    display:block;flex:1 1 auto;min-width:0;text-align:left;
+    padding:0 0 10px;border-bottom:1px solid var(--border);margin-bottom:6px;order:-2;
   }
   .table-wrap.rcards td.tc-primary::before{content:none;}
   .table-wrap.rcards td.tc-primary .ev-title{font-size:14.5px;}
   .table-wrap.rcards td.tc-primary .ev-desc{white-space:normal;max-width:none;}
   .table-wrap.rcards td.tc-status{
-    display:block;position:absolute;top:13px;right:14px;padding:0;border-bottom:none;
+    display:block;flex:0 0 auto;order:-1;padding:0 0 10px;border-bottom:1px solid var(--border);margin-bottom:6px;margin-left:10px;
   }
   .table-wrap.rcards td.tc-status::before{content:none;}
-  .table-wrap.rcards td.tc-empty{display:block;padding:8px 0;}
+  .table-wrap.rcards td.tc-empty{display:block;flex:1 1 100%;padding:8px 0;text-align:left;}
   .table-wrap.rcards td.tc-empty::before{content:none;}
 }
 
